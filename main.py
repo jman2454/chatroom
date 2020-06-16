@@ -14,7 +14,7 @@ def index():
 @socketio.on('message')
 def test_message(message):
     print(message)
-    send(message, broadcase=True)
+    send(message, broadcast=True)
 
 
 if __name__ == '__main__':
