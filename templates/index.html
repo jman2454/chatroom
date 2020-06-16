@@ -16,7 +16,10 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
   <!-- <script type="text/javascript" src="https://cdnjs.cloudfare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script> -->
   <script src="../static/js/node_modules/socket.io-client/dist/socket.io.js"></script>
-  <script src="../static/js/chat.js"></script>
+  <script>
+    var str = '"../static/js/chat.js?ver\=' + Date.now() + '"';
+    document.write(`<script src=` + str + `><\/script>`);
+  </script>
 </body>
 
 </html>

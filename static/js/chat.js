@@ -64,7 +64,7 @@ $(document).ready(function () {
     var obj = JSON.parse(msg);
     $("#msgs").append(obj.msg);
     $("#name").html(`
-    Current Room: ` + obj.room + `<button id="leave">Leave Room</button>
+    Current Room: ` + obj.room + ` <button id="leave">Leave Room</button>
     `);
     $("#leave").click(function () {
       socket.emit('leave room', socket.id);
