@@ -32,8 +32,11 @@ $(document).ready(function () {
     $("#msgs").append(msg);
   });
 
-  $("#send").click(function () {
-    socket.emit('push', socket.id, $("#msgbox").val());
+  $("#msgbox").on('keyup', function (e) {
+    if (e.keyCode === 13) {
+      socket.emit('push', socket.id, $("#msgbox").val());
+      $("#msgbox").val("");
+    }
   });
 
   $("#name").on('keyup', function (e) {
