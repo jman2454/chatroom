@@ -4,6 +4,8 @@ $(document).ready(function () {
 
   var socket = io.connect("http://10.0.0.25:5000")
 
+  console.log(io);
+
   $.ajax(
     {
       url: window.location.href + "user",
@@ -13,6 +15,11 @@ $(document).ready(function () {
           $("#name").html(
             '<input id="namebox" placeholder="enter a username"></input>'
           );
+          $("#namebox").on('keyup', function (e) {
+            if (e.keyCode === 13) {
+              socket.emit('new user', socket.id, $("#namebox").val());
+            }
+          });
         } else {
           $("#name").html(
             "<p>Welcome, " + response + "!</p>"
@@ -28,21 +35,12 @@ $(document).ready(function () {
     // socket.emit('new user', socket.id);
   });
 
+  $("#create").click(function () {
+    socket.join($("#sessionid").val());
+  })
+
   socket.on('pull', function (msg) {
     $("#msgs").append(msg);
-  });
-
-  $("#msgbox").on('keyup', function (e) {
-    if (e.keyCode === 13) {
-      socket.emit('push', socket.id, $("#msgbox").val());
-      $("#msgbox").val("");
-    }
-  });
-
-  $("#name").on('keyup', function (e) {
-    if (e.keyCode === 13) {
-      socket.emit('new user', socket.id, $("#namebox").val());
-    }
   });
 
   socket.on('already registered', function (msg) {
@@ -50,6 +48,59 @@ $(document).ready(function () {
   });
 
   socket.on('new user success', function () {
-    $("#name").html("");
+    $("#name").html(`<div id='session'>
+    <input id='sessionid' placeholder="Enter a room ID!"></input>
+    <button id='create'>Create/Join Room</button>
+  </div>`);
+    $("#sessionid").on('keyup', function (e) {
+      if (e.keyCode === 13) {
+        socket.emit('new room', socket.id, $("#sessionid").val());
+      }
+    });
+    $("#create").click(function () {
+      socket.emit('new room', socket.id, $("#sessionid").val());
+    });
   });
+
+  socket.on('joined', function (msg) {
+    $("#msgs").append(msg);
+    $("#name").html(`
+    <button id="leave">Leave Room</button>
+    `);
+    $("#leave").click(function () {
+      socket.emit('leave room', socket.id);
+    });
+    $("#chat").html(`
+    <input id="msgbox" placeholder="type your message here!"></input>
+    `);
+    $("#msgbox").on('keyup', function (e) {
+      if (e.keyCode === 13) {
+        socket.emit('push', socket.id, $("#msgbox").val());
+        $("#msgbox").val("");
+      }
+    });
+  });
+
+  socket.on('left', function (msg) {
+    $("#chat").html("");
+    $("#msgs").append(msg);
+    $("#name").html(`<div id='session'>
+    <input id='sessionid' placeholder="Enter a room ID!"></input>
+    <button id='create'>Create/Join Room</button>
+  </div>`);
+    $("#sessionid").on('keyup', function (e) {
+      if (e.keyCode === 13) {
+        socket.emit('new room', socket.id, $("#sessionid").val());
+      }
+    });
+    $("#create").click(function () {
+      socket.emit('new room', socket.id, $("#sessionid").val());
+    });
+  });
+
+  socket.on('someone else left', function (msg) {
+    $("#msgs").append(msg);
+  });
+
+
 })
