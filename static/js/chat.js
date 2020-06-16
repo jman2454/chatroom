@@ -4,8 +4,6 @@ $(document).ready(function () {
 
   var socket = io.connect("http://10.0.0.25:5000")
 
-  console.log(io);
-
   $.ajax(
     {
       url: window.location.href + "user",
@@ -63,9 +61,10 @@ $(document).ready(function () {
   });
 
   socket.on('joined', function (msg) {
-    $("#msgs").append(msg);
+    var obj = JSON.parse(msg);
+    $("#msgs").append(obj.msg);
     $("#name").html(`
-    <button id="leave">Leave Room</button>
+    Current Room: ` + obj.room + `<button id="leave">Leave Room</button>
     `);
     $("#leave").click(function () {
       socket.emit('leave room', socket.id);
@@ -83,7 +82,7 @@ $(document).ready(function () {
 
   socket.on('left', function (msg) {
     $("#chat").html("");
-    $("#msgs").append(msg);
+    $("#msgs").html(msg);
     $("#name").html(`<div id='session'>
     <input id='sessionid' placeholder="Enter a room ID!"></input>
     <button id='create'>Create/Join Room</button>

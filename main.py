@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
+import json
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'bruh'
@@ -50,7 +51,11 @@ def add_room(id, room):
         rooms[room].append(users[id][0])
     users[id][1] = room
     join_room(room)
-    emit('joined', users[id][0] + ' has entered the room!<br>', room=room)
+    data = {}
+    data['msg'] = users[id][0] + ' has entered the room!<br>'
+    data['room'] = room
+    emit('joined', json.dumps(data),
+         room=room)
 
 
 @socketio.on('leave room')
