@@ -1,6 +1,11 @@
+import { Canvas } from "../js/canvas.js";
 
 // var io = require('socket.io-client');
 $(document).ready(function () {
+
+  var canvas = new Canvas(500, 500, 'gametest');
+
+  var room = null;
 
   var socket = io.connect("http://10.0.0.25:5000")
 
@@ -27,6 +32,66 @@ $(document).ready(function () {
     }
   );
 
+  var myInput = {
+    'left': false,
+    'right': false,
+    'up': false,
+    'down': false
+  }
+
+  var down = function (e) {
+    switch (e.keyCode) {
+      case 37:
+        myInput['left'] = true;
+        myInput['right'] = false;
+        break;
+      case 38:
+        myInput['up'] = true;
+        myInput['down'] = false;
+        break;
+      case 39:
+        myInput['right'] = true;
+        myInput['left'] = false;
+        break;
+      case 40:
+        myInput['down'] = true;
+        myInput['up'] = false;
+        break;
+    }
+    if (e.keyCode >= 37 && e.keyCode <= 40) {
+      socket.emit('keypress', socket.id, myInput);
+    }
+  }
+
+  var up = function (e) {
+    switch (e.keyCode) {
+      case 37:
+        myInput['left'] = false;
+        break;
+      case 38:
+        myInput['up'] = false;
+        break;
+      case 39:
+        myInput['right'] = false;
+        break;
+      case 40:
+        myInput['down'] = false;
+        break;
+    }
+    if (e.keyCode >= 37 && e.keyCode <= 40) {
+      socket.emit('keypress', socket.id, myInput);
+    }
+  }
+
+  function gameSetup() {
+    window.addEventListener('keydown', down);
+    window.addEventListener('keyup', up);
+  }
+
+  function leaveGame() {
+    window.removeEventListener('keyup', up);
+    window.removeEventListener('keydown', down);
+  }
 
   socket.on('connect', function () {
     console.log("connected");
@@ -50,7 +115,7 @@ $(document).ready(function () {
     <input id='sessionid' placeholder="Enter a room ID!"></input>
     <button id='create'>Create/Join Room</button>
   </div>`);
-    $("#sessionid").on('keyup', function (e) {
+    $("#sessionid").on('keydown', function (e) {
       if (e.keyCode === 13) {
         socket.emit('new room', socket.id, $("#sessionid").val());
       }
@@ -63,6 +128,7 @@ $(document).ready(function () {
   socket.on('joined', function (msg) {
     var obj = JSON.parse(msg);
     $("#msgs").append(obj.msg);
+    room = obj.room;
     $("#name").html(`
     Current Room: ` + obj.room + ` <button id="leave">Leave Room</button>
     `);
@@ -78,6 +144,8 @@ $(document).ready(function () {
         $("#msgbox").val("");
       }
     });
+
+    gameSetup();
   });
 
   socket.on('left', function (msg) {
@@ -95,11 +163,20 @@ $(document).ready(function () {
     $("#create").click(function () {
       socket.emit('new room', socket.id, $("#sessionid").val());
     });
+    leaveGame();
   });
 
   socket.on('someone else left', function (msg) {
     $("#msgs").append(msg);
   });
 
+  socket.on('update', function (playerData) {
+    if ("{}".localeCompare(playerData) === 0) return;
+    var players = JSON.parse(playerData);
+    canvas.clear();
+    for (var p in players) {
+      canvas.draw(players[p]);
+    }
+  });
 
 })
