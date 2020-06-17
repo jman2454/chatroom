@@ -7,10 +7,22 @@
     .row {
       display: flex;
       text-align: center;
+      flex: 50%;
+      padding-top: 2%;
+      padding-bottom: 2%;
     }
 
     .column {
       flex: 50%;
+    }
+
+    .bottom {
+      display: block;
+      text-align: center;
+    }
+
+    #txt {
+      bottom: 0;
     }
   </style>
 </head>
@@ -27,11 +39,12 @@
     </div>
     <div class="column">
       <h1 id="msgs"></h1>
-
-      <div id="name"></div>
-
-      <div id="chat"></div>
+      <div id="txt"></div>
     </div>
+  </div>
+  <div class="bottom">
+    <div id="chat"></div>
+    <div id="name"></div>
   </div>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>

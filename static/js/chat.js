@@ -146,12 +146,12 @@ $(document).ready(function () {
     $("#msgs").append(obj.msg);
     room = obj.room;
     $("#name").html(`
-    Current Room: ` + obj.room + ` <button id="leave">Leave Room</button>
+    Current Room: ` + obj.room + `<br><button id="leave">Leave Room</button>
     `);
     $("#leave").click(function () {
       socket.emit('leave room', socket.id);
     });
-    $("#chat").html(`
+    $("#txt").html(`
     <input id="msgbox" placeholder="type your message here!"></input>
     `);
     $("#msgbox").on('keyup', function (e) {
