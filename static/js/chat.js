@@ -1,9 +1,15 @@
 import { Canvas } from "../js/canvas.js";
 
+const COOLDOWN = 5;
+
+$("#typing").hide();
+
 // var io = require('socket.io-client');
 $(document).ready(function () {
 
   var canvas = new Canvas(500, 500, 'gametest');
+
+  var typingcooldown = COOLDOWN;
 
   var room = null;
 
@@ -121,7 +127,14 @@ $(document).ready(function () {
   })
 
   socket.on('pull', function (msg) {
+    $("#typing").hide();
     $("#msgs").append(msg);
+  });
+
+  socket.on('client typing', function (id) {
+    if (socket.id.localeCompare(id) !== 0) {
+      $("#typing").show();
+    }
   });
 
   socket.on('already registered', function (msg) {
@@ -164,6 +177,11 @@ $(document).ready(function () {
     $("#txt").html(`
     <input id="msgbox" placeholder="type your message here!"></input>
     `);
+    $("#msgbox").on('keydown', function (e) {
+      if (e.keyCode >= 65 && e.keyCode <= 90) {
+        socket.emit('typing', socket.id, room);
+      }
+    });
     $("#msgbox").on('keyup', function (e) {
       if (e.keyCode === 13) {
         socket.emit('push', socket.id, $("#msgbox").val());
@@ -174,9 +192,9 @@ $(document).ready(function () {
     gameSetup();
   });
 
-  socket.on('disconnect', function () {
-    socket.emit('leave room', socket.id, room);
-  });
+  // socket.on('disconnect', function () {
+  //   socket.emit('leave room', socket.id, room);
+  // });
 
   socket.on('left', function (msg) {
     canvas.clear();
@@ -203,6 +221,11 @@ $(document).ready(function () {
   });
 
   socket.on('update', function (playerData) {
+    typingcooldown = Math.max(0, typingcooldown - 0.01666);
+    if (typingcooldown === 0) {
+      $("#typing").hide();
+      typingcooldown = COOLDOWN;
+    }
     if ("{}".localeCompare(playerData) === 0) return;
     var players = JSON.parse(playerData);
     canvas.clear();

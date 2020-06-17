@@ -46,8 +46,13 @@ def test_message(id, message):
     if users[id][1] is None:
         return
     emit("pull",
-         users[id][0] + ": " + message + "<br>", broadcast=True,
+         users[id][0] + ": " + message + "<br>",
          room=users[id][1])
+
+
+@socketio.on('typing')
+def typing(id, room):
+    emit('client typing', id, room=room)
 
 
 @socketio.on('new user')

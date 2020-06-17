@@ -10,6 +10,7 @@ class Player(GameElement):
     TOP_SPEED = 150
     BULLET_SPEED = 500
     RADIUS = 20
+    SHOT_COOLDOWN = 0.05
 
     def __init__(self, x=0, y=0, vx=0, vy=0):
         super().__init__(x, y, vx, vy)
@@ -22,11 +23,13 @@ class Player(GameElement):
         self.wasMoving = False
         self.bullets = []
         self.radius = Player.RADIUS
+        self.cooldown = Player.SHOT_COOLDOWN
 
     def handleInput(self, input):
         self.input = input
 
     def update(self, delta):
+        self.cooldown = max(self.cooldown - delta, 0)
         self.pos.add(self.vel.cpy().times(delta))
         if (self.isMoving() and not self.wasMoving):
             self.setSpeed(Player.DASH_SPEED)
@@ -36,11 +39,12 @@ class Player(GameElement):
         self.vel.times(0.94)
         radVector = Vector(self.radius, 0)
         radVector.setAngle(self.vel.getAngle())
-        if (self.input['shot']):
+        if (self.cooldown == 0 and self.input['shot']):
+            self.cooldown = Player.SHOT_COOLDOWN
             self.bullets.append(
                 Bullet(self.pos.cpy().add(radVector),
                        self.vel.getAngle(), Player.BULLET_SPEED))
-            self.input['shot'] = False
+            # self.input['shot'] = False
 
         for b in self.bullets:
             b.update(delta)
