@@ -27,6 +27,12 @@ def name():
         return ""
 
 
+# @app.route('/game/<game_id>', methods=["GET"])
+# def join(game_id):
+#     if not game_id in rooms:
+#         return render_tempate
+
+
 @socketio.on('push')
 def test_message(id, message):
     emit("pull",
