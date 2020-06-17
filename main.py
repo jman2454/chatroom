@@ -19,6 +19,11 @@ def index():
     return render_template('index.html', linked="false")
 
 
+@app.route('/games')
+def listActiveGames():
+    return str([k for k in games])
+
+
 @app.route('/user', methods=["GET"])
 def name():
     try:

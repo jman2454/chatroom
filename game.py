@@ -47,8 +47,8 @@ class Game:
         # print(id(self))
         # print("THIS ROOM: " + self.room)
         # print("CLIENT ROOM: " + room)
-        if (room == self.room):
-            self.players[pid].handleInput(input)
+        # if (room == self.room):
+        self.players[pid].handleInput(input)
 
     def start(self):
         self.render()

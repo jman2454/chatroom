@@ -164,6 +164,10 @@ $(document).ready(function () {
     gameSetup();
   });
 
+  socket.on('disconnect', function () {
+    socket.emit('leave room', socket.id);
+  });
+
   socket.on('left', function (msg) {
     $("#chat").html("");
     $("#msgs").html(msg);
