@@ -7,30 +7,41 @@ $(document).ready(function () {
 
   var room = null;
 
-  var socket = io.connect("http://10.0.0.25:5000")
+  var linkedGame = $("#linked").val().localeCompare("true") === 0;
 
-  $.ajax(
-    {
-      url: window.location.href + "user",
-      socketid: socket.id,
-      success: function (response) {
-        if (response === "") {
-          $("#name").html(
-            '<input id="namebox" placeholder="enter a username"></input>'
-          );
-          $("#namebox").on('keyup', function (e) {
-            if (e.keyCode === 13) {
-              socket.emit('new user', socket.id, $("#namebox").val());
-            }
-          });
-        } else {
-          $("#name").html(
-            "<p>Welcome, " + response + "!</p>"
-          );
-        }
-      }
-    }
+  var socket = io.connect("http://10.0.0.25:5000");
+
+  // $.ajax(
+  //   {
+  //     url: window.location.href + "user",
+  //     socketid: socket.id,
+  //     success: function (response) {
+  //       if (response === "") {
+  //         $("#name").html(
+  //           '<input id="namebox" placeholder="enter a username"></input>'
+  //         );
+  //         $("#namebox").on('keyup', function (e) {
+  //           if (e.keyCode === 13) {
+  //             socket.emit('new user', socket.id, $("#namebox").val());
+  //           }
+  //         });
+  //       } else {
+  //         $("#name").html(
+  //           "<p>Welcome, " + response + "!</p>"
+  //         );
+  //       }
+  //     }
+  //   }
+  // );
+
+  $("#name").html(
+    '<input id="namebox" placeholder="enter a username"></input>'
   );
+  $("#namebox").on('keyup', function (e) {
+    if (e.keyCode === 13) {
+      socket.emit('new user', socket.id, $("#namebox").val());
+    }
+  });
 
   var myInput = {
     'left': false,
@@ -111,18 +122,23 @@ $(document).ready(function () {
   });
 
   socket.on('new user success', function () {
-    $("#name").html(`<div id='session'>
+    if (linkedGame) {
+      socket.emit('new room', socket.id, $("#roomid").val());
+      linkedGame = false;
+    } else {
+      $("#name").html(`<div id='session'>
     <input id='sessionid' placeholder="Enter a room ID!"></input>
     <button id='create'>Create/Join Room</button>
   </div>`);
-    $("#sessionid").on('keydown', function (e) {
-      if (e.keyCode === 13) {
+      $("#sessionid").on('keydown', function (e) {
+        if (e.keyCode === 13) {
+          socket.emit('new room', socket.id, $("#sessionid").val());
+        }
+      });
+      $("#create").click(function () {
         socket.emit('new room', socket.id, $("#sessionid").val());
-      }
-    });
-    $("#create").click(function () {
-      socket.emit('new room', socket.id, $("#sessionid").val());
-    });
+      });
+    }
   });
 
   socket.on('joined', function (msg) {

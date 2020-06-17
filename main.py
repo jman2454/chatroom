@@ -16,7 +16,7 @@ games = {}
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', linked="false")
 
 
 @app.route('/user', methods=["GET"])
@@ -27,10 +27,13 @@ def name():
         return ""
 
 
-# @app.route('/game/<game_id>', methods=["GET"])
-# def join(game_id):
-#     if not game_id in rooms:
-#         return render_tempate
+@app.route('/game/<game_id>', methods=["GET"])
+def join(game_id):
+    if not game_id in rooms:
+        return render_template('404.html')
+    else:
+        return render_template('index.html', linked="true", room_id=game_id)
+        # rooms[game_id].append(users[id][0])
 
 
 @socketio.on('push')
@@ -47,6 +50,11 @@ def add_user(id, name):
         emit('new user success')
     else:
         emit('already registered', 'You are already registered!')
+
+
+# @socketio.on('join game from link')
+# def join_game(socket_id, room_id):
+#     return render_template('index.html', linked=True, id=socket_id, room=room_id)
 
 
 @socketio.on('new room')

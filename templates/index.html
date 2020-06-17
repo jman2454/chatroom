@@ -7,6 +7,10 @@
 
 <body>
 
+  <input id="linked" type="hidden" value={{linked}}></input>
+
+  <input type="hidden" id="roomid" value={{room_id}}></input>
+
   <div id="name"></div>
 
   <div id="chat"></div>
@@ -25,8 +29,13 @@
   <script>
     var str = '"../static/js/canvas.js?ver\=' + Date.now() + '"';
     document.write(`<script type="module" src=` + str + `><\/script>`);
+    // if ($("#linked").val().localeCompare("true") === 0) {
+    //   var str = '"../static/js/join_game.js?ver\=' + Date.now() + '"';
+    //   document.write(`<script type="module" src=` + str + `><\/script>`);
+    // } else {
     str = '"../static/js/chat.js?ver\=' + Date.now() + '"';
-    document.write(`<script type="module" src=` + str + `><\/script>`);
+    document.write(`<script id="ioscript" type="module" src=` + str + `><\/script>`);
+    // }
   </script>
 </body>
 
