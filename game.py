@@ -2,10 +2,14 @@ import time
 import json
 from player import Player
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
+from gameelement import GameElement
 
 
 class Game:
     def __init__(self, socketio, room):
+        self.width = 500
+        self.height = 500
+        GameElement.setBounds(self.width, self.height)
         self.currFrame = 0
         self.pastFrame = 0
         self.socketio = socketio
@@ -19,9 +23,9 @@ class Game:
             self.players[pID].update(delta)
 
     def draw(self, delta):
-        emit('update', json.dumps({k: {'x': v.getX(), 'y': v.getY()}
-                                   for k, v in self.players.items()}),
-             room=self.room)
+        emit('update', json.dumps(
+            {k: v.jsonify() for k, v in self.players.items()}
+        ), room=self.room)
 
     def render(self):
         running = True
@@ -36,7 +40,7 @@ class Game:
             self.draw(dt)
 
     def addPlayer(self, id):
-        self.players[id] = Player(250, 250)
+        self.players[id] = Player(self.width/2, self.height/2)
 
     def processInput(self, pid, input, room):
         # print THIS ROOM and the room name

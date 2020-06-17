@@ -14,12 +14,26 @@ class Canvas {
   }
 
   draw(player) {
+    // this.canvas.fillStyle = 'black';
+    // this.canvas.strokeStyle = 'black';
+    // this.canvas.beginPath();
+    // // this.canvas.ellipse(250, 250, 20, 20, 0, 0, 2 * Math.PI);
+    // // this.canvas.closePath();
+    // this.canvas.ellipse(parseInt(player.x), this.element.height - parseInt(player.y), 20, 20, 10, 0, 2 * Math.PI);
+    // this.canvas.stroke();
+
+    this.drawDot(player.x, player.y, player.radius);
+    player.bullets.forEach(b => this.drawDot(b.x, b.y, 5));
+  }
+
+  drawDot(x, y, radius) {
     this.canvas.fillStyle = 'black';
     this.canvas.strokeStyle = 'black';
     this.canvas.beginPath();
     // this.canvas.ellipse(250, 250, 20, 20, 0, 0, 2 * Math.PI);
     // this.canvas.closePath();
-    this.canvas.ellipse(parseInt(player.x), this.element.height - parseInt(player.y), 20, 20, 10, 0, 2 * Math.PI);
+    this.canvas.ellipse(x, this.element.height - y, radius, radius,
+      0, 0, 2 * Math.PI);
     this.canvas.stroke();
   }
 

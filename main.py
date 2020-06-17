@@ -43,6 +43,8 @@ def join(game_id):
 
 @socketio.on('push')
 def test_message(id, message):
+    if users[id][1] is None:
+        return
     emit("pull",
          users[id][0] + ": " + message + "<br>", broadcast=True,
          room=users[id][1])
@@ -85,11 +87,13 @@ def add_room(id, room):
 
 
 @socketio.on('leave room')
-def leave(id):
+def leave(id, room):
+    leave_room(room)
+    if id is None:
+        return
     if (games[users[id][1]].leave(id, users[id][1])):
         game = games.pop(users[id][1], None)
         del game
-    leave_room(users[id][1])
     emit('someone else left', users[id][0] +
          ' has left the room.<br>', room=users[id][1])
     emit('left', "You left the room.<br>")

@@ -1,3 +1,6 @@
+import math
+
+
 class Vector:
     def __init__(self, x=0, y=0):
         self.x = x
@@ -23,6 +26,18 @@ class Vector:
             self.x += x
             self.y += y
         return self
+
+    def setAngle(self, angle, degrees=False):
+        mag = self.mag()
+        self.x = mag * math.cos(math.degrees(angle) if degrees else angle)
+        self.y = mag * math.sin(math.degrees(angle) if degrees else angle)
+        return self
+
+    def getAngle(self):
+        return math.atan2(self.y, self.x)
+
+    def mag(self):
+        return (self.x*self.x + self.y*self.y) ** 0.5
 
     def dist(self, vec):
         return (((self.x - vec.x) ** 2) + ((self.y - vec.y) ** 2)) ** 0.5

@@ -47,7 +47,8 @@ $(document).ready(function () {
     'left': false,
     'right': false,
     'up': false,
-    'down': false
+    'down': false,
+    'shot': false
   }
 
   var down = function (e) {
@@ -68,8 +69,11 @@ $(document).ready(function () {
         myInput['down'] = true;
         myInput['up'] = false;
         break;
+      case 32:
+        myInput['shot'] = true;
+        break;
     }
-    if (e.keyCode >= 37 && e.keyCode <= 40) {
+    if (e.keyCode === 32 || (e.keyCode >= 37 && e.keyCode <= 40)) {
       socket.emit('keypress' + room, socket.id, myInput, room);
     }
   }
@@ -88,8 +92,11 @@ $(document).ready(function () {
       case 40:
         myInput['down'] = false;
         break;
+      case 32:
+        myInput['shot'] = false;
+        break;
     }
-    if (e.keyCode >= 37 && e.keyCode <= 40) {
+    if (e.keyCode === 32 || (e.keyCode >= 37 && e.keyCode <= 40)) {
       socket.emit('keypress' + room, socket.id, myInput, room);
     }
   }
@@ -141,6 +148,8 @@ $(document).ready(function () {
     }
   });
 
+  // TODO: make easing functions/fade in for speed of dots
+
   socket.on('joined', function (msg) {
     var obj = JSON.parse(msg);
     $("#msgs").append(obj.msg);
@@ -149,7 +158,8 @@ $(document).ready(function () {
     Current Room: ` + obj.room + `<br><button id="leave">Leave Room</button>
     `);
     $("#leave").click(function () {
-      socket.emit('leave room', socket.id);
+      socket.emit('eep');
+      socket.emit('leave room', socket.id, obj.room);
     });
     $("#txt").html(`
     <input id="msgbox" placeholder="type your message here!"></input>
@@ -165,11 +175,12 @@ $(document).ready(function () {
   });
 
   socket.on('disconnect', function () {
-    socket.emit('leave room', socket.id);
+    socket.emit('leave room', socket.id, room);
   });
 
   socket.on('left', function (msg) {
     canvas.clear();
+    room = null;
     $("#chat").html("");
     $("#msgs").html(msg);
     $("#name").html(`<div id='session'>
