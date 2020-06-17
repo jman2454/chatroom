@@ -50,7 +50,7 @@ def add_room(id, room):
         return
     elif not room in rooms:
         rooms[room] = [users[id][0]]
-        games[room] = Game(socketio)
+        games[room] = Game(socketio, room)
         emit('new game', room=room)
     else:
         rooms[room].append(users[id][0])
@@ -67,14 +67,16 @@ def add_room(id, room):
 
 @socketio.on('leave room')
 def leave(id):
-    games[users[id][1]].leave(id)
+    if (games[users[id][1]].leave(id, users[id][1])):
+        game = games.pop(users[id][1], None)
+        del game
     leave_room(users[id][1])
     emit('someone else left', users[id][0] +
          ' has left the room.<br>', room=users[id][1])
     emit('left', "You left the room.<br>")
     rooms[users[id][1]].remove(users[id][0])
     if (rooms[users[id][1]] == []):
-        rooms[users[id][1]] = []
+        rooms.pop(users[id][1], None)
     users[id][1] = None
 
 

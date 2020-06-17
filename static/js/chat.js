@@ -59,7 +59,7 @@ $(document).ready(function () {
         break;
     }
     if (e.keyCode >= 37 && e.keyCode <= 40) {
-      socket.emit('keypress', socket.id, myInput);
+      socket.emit('keypress' + room, socket.id, myInput, room);
     }
   }
 
@@ -79,7 +79,7 @@ $(document).ready(function () {
         break;
     }
     if (e.keyCode >= 37 && e.keyCode <= 40) {
-      socket.emit('keypress', socket.id, myInput);
+      socket.emit('keypress' + room, socket.id, myInput, room);
     }
   }
 
@@ -178,5 +178,4 @@ $(document).ready(function () {
       canvas.draw(players[p]);
     }
   });
-
 })
