@@ -23,7 +23,7 @@ class Canvas {
     // this.canvas.stroke();
 
     this.drawDot(player.x, player.y, player.radius);
-    player.bullets.forEach(b => this.drawDot(b.x, b.y, 5));
+    player.bullets.forEach(b => this.drawDot(b.x, b.y, b.radius));
   }
 
   drawDot(x, y, radius) {
