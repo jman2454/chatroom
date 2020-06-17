@@ -169,6 +169,7 @@ $(document).ready(function () {
   });
 
   socket.on('left', function (msg) {
+    canvas.clear();
     $("#chat").html("");
     $("#msgs").html(msg);
     $("#name").html(`<div id='session'>

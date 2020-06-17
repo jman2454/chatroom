@@ -15,6 +15,7 @@ class Canvas {
 
   draw(player) {
     this.canvas.fillStyle = 'black';
+    this.canvas.strokeStyle = 'black';
     this.canvas.beginPath();
     // this.canvas.ellipse(250, 250, 20, 20, 0, 0, 2 * Math.PI);
     // this.canvas.closePath();
