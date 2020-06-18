@@ -15,7 +15,7 @@ $(document).ready(function () {
 
   var linkedGame = $("#linked").val().localeCompare("true") === 0;
 
-  var socket = io.connect(window.location.href);
+  var socket = io.connect(window.location.href.match(/.*:5000/));
 
   // $.ajax(
   //   {
@@ -107,25 +107,36 @@ $(document).ready(function () {
     }
   }
 
-  function emitMousePos(e) {
+  var mouseX = 0;
+  var mouseY = 0;
+  function getMousePos(e) {
     var bounds = canvas.getHtmlElement().getBoundingClientRect();
     var x = e.pageX - bounds.x - scrollX;
     var y = e.pageY - bounds.y - scrollY;
     x *= canvas.getHtmlElement().width / bounds.width;
     y *= canvas.getHtmlElement().height / bounds.height;
+    mouseX = x;
+    mouseY = y;
+  }
+
+  var interval = 0;
+
+  function emitMousePos(x, y) {
     socket.emit('mousemove' + room, socket.id, x, y);
   }
 
   function gameSetup() {
     window.addEventListener('keydown', down);
     window.addEventListener('keyup', up);
-    $("#gametest").on('mousemove', emitMousePos);
+    $("#gametest").on('mousemove', getMousePos);
+    interval = setInterval(function () { emitMousePos(mouseX, mouseY) }, 30);
   }
 
   function leaveGame() {
     window.removeEventListener('keyup', up);
     window.removeEventListener('keydown', down);
     $("#gametest").off('mousemove', emitMousePos);
+    clearInterval(interval);
   }
 
   socket.on('connect', function () {
