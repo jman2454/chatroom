@@ -49,12 +49,27 @@ $(document).ready(function () {
     }
   });
 
-  var myInput = {
+  var keyInput = {
     'left': false,
     'right': false,
     'up': false,
     'down': false,
     'shot': false
+  }
+
+  var mouseInput = {
+    'mouseX':0,
+    'mouseY':0
+  }
+
+  var mouseDown = function (e) {
+    keyInput['shot'] = true
+    socket.emit('keypress' + room, socket.id, keyInput);
+  }
+
+  var mouseUp = function (e) {
+    keyInput['shot'] = false
+    socket.emit('keypress' + room, socket.id, keyInput);
   }
 
   var down = function (e) {
@@ -80,7 +95,7 @@ $(document).ready(function () {
         break;
     }
     if (e.keyCode === 32 || e.keyCode === 83 || e.keyCode === 87 || e.keyCode === 65 || e.keyCode === 68) {
-      socket.emit('keypress' + room, socket.id, keyInput, room);
+      socket.emit('keypress' + room, socket.id, keyInput);
     }
   }
 
@@ -103,26 +118,27 @@ $(document).ready(function () {
         break;
     }
     if (e.keyCode === 32 || e.keyCode === 83 || e.keyCode === 87 || e.keyCode === 65 || e.keyCode === 68) {
-      socket.emit('keypress' + room, socket.id, keyInput, room);
+      socket.emit('keypress' + room, socket.id, keyInput);
     }
   }
 
-  var mouseX = 0;
-  var mouseY = 0;
   function getMousePos(e) {
     var bounds = canvas.getHtmlElement().getBoundingClientRect();
     var x = e.pageX - bounds.x - scrollX;
     var y = e.pageY - bounds.y - scrollY;
     x *= canvas.getHtmlElement().width / bounds.width;
     y *= canvas.getHtmlElement().height / bounds.height;
-    mouseX = x;
-    mouseY = y;
+    // mouseInput.mouseX = x;
+    // mouseInput.mouseY = y;
+    mouseInput['mouseX'] = x;
+    mouseInput['mouseY'] = y;
   }
 
   var interval = 0;
 
-  function emitMousePos(x, y) {
-    socket.emit('mousemove' + room, socket.id, x, y);
+  function emitMousePos(mousePos) {
+    console.log(mousePos);
+    socket.emit('mousemove' + room, socket.id, mousePos);
   }
 
   function gameSetup() {
@@ -131,7 +147,7 @@ $(document).ready(function () {
     window.addEventListener("mousedown", mouseDown);
     window.addEventListener("mouseup", mouseUp);
     $("#gametest").on('mousemove', getMousePos);
-    interval = setInterval(function () { emitMousePos(mouseX, mouseY) }, 30);
+    interval = setInterval(function() {emitMousePos(mouseInput)}, 30);
   }
 
   function leaveGame() {
