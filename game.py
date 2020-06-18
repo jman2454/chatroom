@@ -56,8 +56,10 @@ class Game:
         # if (room == self.room):
         self.players[pid].handleInput(input)
 
-    def processCursor(self, pid, mouseX, mouseY):
-        self.players[pid].handleMouse(mouseX, self.height - mouseY)
+    def processCursor(self, pid, mouseInput):
+        self.players[pid].handleMouse(
+            mouseInput['mouseX'], self.height - mouseInput['mouseY']
+        )
 
     def start(self):
         self.render()
