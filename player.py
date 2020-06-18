@@ -33,7 +33,7 @@ class Player(GameElement):
         self.cooldown = Player.SHOT_COOLDOWN
         self.mouseDir = Vector(1, 0)
         self.attackMode = Player.AttackMode.SHOOTING
-        self.shield = Shield(self.pos, self.radius * 1.1)
+        self.shield = Shield(self.pos, self.radius * 1.2)
 
     def handleInput(self, input):
         self.input = input
@@ -52,6 +52,7 @@ class Player(GameElement):
                 self.attackMode = Player.AttackMode.BLOCKING
         else:
             self.shield.setActive(self.input['shield'])
+            self.shield.setAngle(self.mouseDir.getAngle())
 
     def update(self, delta):
         self.cooldown = max(self.cooldown - delta, 0)
@@ -97,5 +98,6 @@ class Player(GameElement):
             'x': self.getX(),
             'y': self.getY(),
             'radius': self.radius,
+            'shield': self.shield.jsonify(),
             'bullets': [b.jsonify() for b in self.bullets]
         }

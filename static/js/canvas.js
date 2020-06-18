@@ -24,17 +24,30 @@ class Canvas {
 
     this.drawDot(player.x, player.y, player.radius);
     // this.drawDot(player.mouseX, player.mouseY, 10);
+    if (player.shield.active === true) {
+      this.drawDot(player.x, player.y, player.shield.radius,
+        {
+          'start': player.shield.angle - player.shield.arc / 2,
+          'end': player.shield.angle + player.shield.arc / 2
+        });
+    }
     player.bullets.forEach(b => this.drawDot(b.x, b.y, b.radius));
   }
 
-  drawDot(x, y, radius) {
+  drawDot(x, y, radius, angles) {
     this.canvas.fillStyle = 'black';
     this.canvas.strokeStyle = 'black';
     this.canvas.beginPath();
     // this.canvas.ellipse(250, 250, 20, 20, 0, 0, 2 * Math.PI);
     // this.canvas.closePath();
+    var startAngle = 0;
+    var endAngle = 2 * Math.PI;
+    if (angles) {
+      startAngle = angles.start;
+      endAngle = angles.end;
+    }
     this.canvas.ellipse(x, this.element.height - y, radius, radius,
-      0, 0, 2 * Math.PI);
+      0, -startAngle, -endAngle, true);
     this.canvas.stroke();
   }
 
