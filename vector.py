@@ -27,6 +27,14 @@ class Vector:
             self.y += y
         return self
 
+    def sub(self, x, y=None):
+        if y is None:
+            self.add(x.cpy().times(-1))
+        else:
+            self.x -= x
+            self.y -= y
+        return self
+
     def setAngle(self, angle, degrees=False):
         mag = self.mag()
         self.x = mag * math.cos(math.degrees(angle) if degrees else angle)
@@ -41,3 +49,9 @@ class Vector:
 
     def dist(self, vec):
         return (((self.x - vec.x) ** 2) + ((self.y - vec.y) ** 2)) ** 0.5
+
+    def nor(self):
+        mag = self.mag()
+        self.x /= mag
+        self.y /= mag
+        return self

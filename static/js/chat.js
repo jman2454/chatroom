@@ -80,7 +80,7 @@ $(document).ready(function () {
         break;
     }
     if (e.keyCode === 32 || (e.keyCode >= 37 && e.keyCode <= 40)) {
-      socket.emit('keypress' + room, socket.id, myInput, room);
+      socket.emit('keypress' + room, socket.id, myInput);
     }
   }
 
@@ -103,18 +103,24 @@ $(document).ready(function () {
         break;
     }
     if (e.keyCode === 32 || (e.keyCode >= 37 && e.keyCode <= 40)) {
-      socket.emit('keypress' + room, socket.id, myInput, room);
+      socket.emit('keypress' + room, socket.id, myInput);
     }
+  }
+
+  function emitMousePos(e) {
+    socket.emit('mousemove' + room, socket.id, e.pageX, e.pageY);
   }
 
   function gameSetup() {
     window.addEventListener('keydown', down);
     window.addEventListener('keyup', up);
+    $("#gametest").on('mousemove', emitMousePos);
   }
 
   function leaveGame() {
     window.removeEventListener('keyup', up);
     window.removeEventListener('keydown', down);
+    $("#gametest").off('mousemove', emitMousePos);
   }
 
   socket.on('connect', function () {

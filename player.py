@@ -24,9 +24,14 @@ class Player(GameElement):
         self.bullets = []
         self.radius = Player.RADIUS
         self.cooldown = Player.SHOT_COOLDOWN
+        self.mouseDir = Vector(1, 0)
 
     def handleInput(self, input):
         self.input = input
+
+    def handleMouse(self, mouseX, mouseY):
+        self.mouseDir = (Vector(mouseX, mouseY).sub(
+            self.pos.cpy())).nor()
 
     def update(self, delta):
         self.cooldown = max(self.cooldown - delta, 0)
@@ -37,13 +42,13 @@ class Player(GameElement):
             self.setSpeed(Player.TOP_SPEED)
         self.wasMoving = self.isMoving()
         self.vel.times(0.94)
-        radVector = Vector(self.radius, 0)
-        radVector.setAngle(self.vel.getAngle())
+        # radVector = Vector(self.radius, 0)
+        # radVector.setAngle(self.vel.getAngle())
         if (self.cooldown == 0 and self.input['shot']):
             self.cooldown = Player.SHOT_COOLDOWN
             self.bullets.append(
-                Bullet(self.pos.cpy().add(radVector),
-                       self.vel.getAngle(), Player.BULLET_SPEED))
+                Bullet(self.pos.cpy().add(self.mouseDir.cpy().times(self.radius)),
+                       self.mouseDir.getAngle(), Player.BULLET_SPEED))
             # self.input['shot'] = False
 
         for b in self.bullets:

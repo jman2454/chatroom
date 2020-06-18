@@ -3,6 +3,7 @@ import json
 from player import Player
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
 from gameelement import GameElement
+from vector import Vector
 
 
 class Game:
@@ -17,6 +18,7 @@ class Game:
         self.room = room
         self.socketio.on_event('new player' + room, self.addPlayer)
         self.socketio.on_event('keypress' + room, self.processInput)
+        self.socketio.on_event('mousemove' + room, self.processCursor)
 
     def update(self, delta):
         for pID in self.players:
@@ -42,7 +44,7 @@ class Game:
     def addPlayer(self, id):
         self.players[id] = Player(self.width/2, self.height/2)
 
-    def processInput(self, pid, input, room):
+    def processInput(self, pid, input):
         # print THIS ROOM and the room name
         # print CLIENT ROOM and the room name
         # examine results while doing keypresses on a previously created room, after creating a new room on another tab
@@ -53,6 +55,9 @@ class Game:
         # print("CLIENT ROOM: " + room)
         # if (room == self.room):
         self.players[pid].handleInput(input)
+
+    def processCursor(self, pid, mouseX, mouseY):
+        self.players[pid].handleMouse(mouseX, self.height - mouseY)
 
     def start(self):
         self.render()
