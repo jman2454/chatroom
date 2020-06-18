@@ -58,8 +58,8 @@ $(document).ready(function () {
   }
 
   var mouseInput = {
-    'mouseX':0,
-    'mouseY':0
+    'mouseX': 0,
+    'mouseY': 0
   }
 
   var mouseDown = function (e) {
@@ -137,7 +137,6 @@ $(document).ready(function () {
   var interval = 0;
 
   function emitMousePos(mousePos) {
-    console.log(mousePos);
     socket.emit('mousemove' + room, socket.id, mousePos);
   }
 
@@ -147,7 +146,7 @@ $(document).ready(function () {
     window.addEventListener("mousedown", mouseDown);
     window.addEventListener("mouseup", mouseUp);
     $("#gametest").on('mousemove', getMousePos);
-    interval = setInterval(function() {emitMousePos(mouseInput)}, 30);
+    interval = setInterval(function () { emitMousePos(mouseInput) }, 30);
   }
 
   function leaveGame() {
