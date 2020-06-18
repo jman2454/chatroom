@@ -221,8 +221,8 @@ $(document).ready(function () {
     Current Room: ` + obj.room + `<br><button id="leave">Leave Room</button>
     `);
     $("#leave").click(function () {
-      leaveGame();
       socket.emit('leave room', socket.id, obj.room);
+      leaveGame();
     });
     $("#txt").html(`
     <input id="msgbox" placeholder="type your message here!"></input>
