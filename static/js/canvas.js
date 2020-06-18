@@ -23,6 +23,7 @@ class Canvas {
     // this.canvas.stroke();
 
     this.drawDot(player.x, player.y, player.radius);
+    // this.drawDot(player.mouseX, player.mouseY, 10);
     player.bullets.forEach(b => this.drawDot(b.x, b.y, b.radius));
   }
 
@@ -39,6 +40,10 @@ class Canvas {
 
   clear() {
     this.canvas.clearRect(0, 0, this.element.width, this.element.height);
+  }
+
+  getHtmlElement() {
+    return this.element
   }
 }
 

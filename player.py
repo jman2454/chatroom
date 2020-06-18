@@ -2,6 +2,7 @@ from flask_socketio import SocketIO, send, emit, join_room, leave_room
 from vector import Vector
 from gameelement import GameElement
 from bullet import Bullet
+import math
 
 
 class Player(GameElement):

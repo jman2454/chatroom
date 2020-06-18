@@ -108,7 +108,12 @@ $(document).ready(function () {
   }
 
   function emitMousePos(e) {
-    socket.emit('mousemove' + room, socket.id, e.pageX, e.pageY);
+    var bounds = canvas.getHtmlElement().getBoundingClientRect();
+    var x = e.pageX - bounds.x - scrollX;
+    var y = e.pageY - bounds.y - scrollY;
+    x *= canvas.getHtmlElement().width / bounds.width;
+    y *= canvas.getHtmlElement().height / bounds.height;
+    socket.emit('mousemove' + room, socket.id, x, y);
   }
 
   function gameSetup() {
