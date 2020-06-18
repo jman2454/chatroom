@@ -59,51 +59,51 @@ $(document).ready(function () {
 
   var down = function (e) {
     switch (e.keyCode) {
-      case 37:
-        myInput['left'] = true;
-        myInput['right'] = false;
+      case 65:
+        keyInput['left'] = true;
+        keyInput['right'] = false;
         break;
-      case 38:
-        myInput['up'] = true;
-        myInput['down'] = false;
+      case 87:
+        keyInput['up'] = true;
+        keyInput['down'] = false;
         break;
-      case 39:
-        myInput['right'] = true;
-        myInput['left'] = false;
+      case 68:
+        keyInput['right'] = true;
+        keyInput['left'] = false;
         break;
-      case 40:
-        myInput['down'] = true;
-        myInput['up'] = false;
+      case 83:
+        keyInput['down'] = true;
+        keyInput['up'] = false;
         break;
       case 32:
-        myInput['shot'] = true;
+        keyInput['shot'] = true;
         break;
     }
-    if (e.keyCode === 32 || (e.keyCode >= 37 && e.keyCode <= 40)) {
-      socket.emit('keypress' + room, socket.id, myInput);
+    if (e.keyCode === 32 || e.keyCode === 83 || e.keyCode === 87 || e.keyCode === 65 || e.keyCode === 68) {
+      socket.emit('keypress' + room, socket.id, keyInput, room);
     }
   }
 
   var up = function (e) {
     switch (e.keyCode) {
-      case 37:
-        myInput['left'] = false;
+      case 65:
+        keyInput['left'] = false;
         break;
-      case 38:
-        myInput['up'] = false;
+      case 87:
+        keyInput['up'] = false;
         break;
-      case 39:
-        myInput['right'] = false;
+      case 68:
+        keyInput['right'] = false;
         break;
-      case 40:
-        myInput['down'] = false;
+      case 83:
+        keyInput['down'] = false;
         break;
       case 32:
-        myInput['shot'] = false;
+        keyInput['shot'] = false;
         break;
     }
-    if (e.keyCode === 32 || (e.keyCode >= 37 && e.keyCode <= 40)) {
-      socket.emit('keypress' + room, socket.id, myInput);
+    if (e.keyCode === 32 || e.keyCode === 83 || e.keyCode === 87 || e.keyCode === 65 || e.keyCode === 68) {
+      socket.emit('keypress' + room, socket.id, keyInput, room);
     }
   }
 
@@ -128,6 +128,8 @@ $(document).ready(function () {
   function gameSetup() {
     window.addEventListener('keydown', down);
     window.addEventListener('keyup', up);
+    window.addEventListener("mousedown", mouseDown);
+    window.addEventListener("mouseup", mouseUp);
     $("#gametest").on('mousemove', getMousePos);
     interval = setInterval(function () { emitMousePos(mouseX, mouseY) }, 30);
   }
@@ -135,6 +137,8 @@ $(document).ready(function () {
   function leaveGame() {
     window.removeEventListener('keyup', up);
     window.removeEventListener('keydown', down);
+    window.removeEventListener("mousedown", mouseDown);
+    window.removeEventListener("mouseup", mouseUp);
     $("#gametest").off('mousemove', emitMousePos);
     clearInterval(interval);
   }
