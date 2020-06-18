@@ -73,6 +73,13 @@ class Player(GameElement):
     def getRadius(self):
         return self.radius
 
+    def getPos(self):
+        return self.pos
+
+    def collides(self, player):
+        return self.pos.cpy().sub(player.pos).mag() <= \
+            self.radius + player.getRadius()
+
     def isMoving(self):
         return self.input['left'] or self.input['right'] or self.input['up'] or self.input['down']
 
@@ -81,6 +88,12 @@ class Player(GameElement):
 
     def getY(self):
         return self.pos.y
+
+    def getVel(self):
+        return self.vel
+
+    def setPosRelative(self, additionVector):
+        self.pos.add(additionVector)
 
     def setSpeed(self, speed):
         if self.input['left']:

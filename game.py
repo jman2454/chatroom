@@ -4,6 +4,7 @@ from player import Player
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
 from gameelement import GameElement
 from vector import Vector
+from collisions import Collisions
 
 
 class Game:
@@ -19,10 +20,12 @@ class Game:
         self.socketio.on_event('new player' + room, self.addPlayer)
         self.socketio.on_event('keypress' + room, self.processInput)
         self.socketio.on_event('mousemove' + room, self.processCursor)
+        self.collisions = Collisions()
 
     def update(self, delta):
         for pID in self.players:
             self.players[pID].update(delta)
+        self.collisions.update(self.players)
 
     def draw(self, delta):
         emit('update', json.dumps(

@@ -35,6 +35,9 @@ class Vector:
             self.y -= y
         return self
 
+    def dist(self, other):
+        return self.cpy().sub(other).mag()
+
     def setAngle(self, angle, degrees=False):
         mag = self.mag()
         self.x = mag * math.cos(math.degrees(angle) if degrees else angle)
