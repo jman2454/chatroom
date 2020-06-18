@@ -4,6 +4,7 @@ from gameelement import GameElement
 from bullet import Bullet
 import math
 from enum import Enum, auto
+from shield import Shield
 
 
 class Player(GameElement):
@@ -32,6 +33,7 @@ class Player(GameElement):
         self.cooldown = Player.SHOT_COOLDOWN
         self.mouseDir = Vector(1, 0)
         self.attackMode = Player.AttackMode.SHOOTING
+        self.shield = Shield(self.pos, self.radius * 1.1)
 
     def handleInput(self, input):
         self.input = input
@@ -49,7 +51,7 @@ class Player(GameElement):
                            self.mouseDir.getAngle(), Player.BULLET_SPEED))
                 self.attackMode = Player.AttackMode.BLOCKING
         else:
-            pass
+            self.shield.setActive(self.input['shield'])
 
     def update(self, delta):
         self.cooldown = max(self.cooldown - delta, 0)
@@ -60,10 +62,7 @@ class Player(GameElement):
             self.setSpeed(Player.TOP_SPEED)
         self.wasMoving = self.isMoving()
         self.vel.times(0.94)
-        # radVector = Vector(self.radius, 0)
-        # radVector.setAngle(self.vel.getAngle())
         self.processAttack()
-        # self.input['shot'] = False
 
         for b in self.bullets:
             b.update(delta)

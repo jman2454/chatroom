@@ -54,7 +54,8 @@ $(document).ready(function () {
     'right': false,
     'up': false,
     'down': false,
-    'shot': false
+    'shot': false,
+    'shield': false
   }
 
   var mouseInput = {
@@ -93,8 +94,12 @@ $(document).ready(function () {
       case 32:
         keyInput['shot'] = true;
         break;
+      case 16:
+        keyInput['shield'] = true;
+        break;
     }
-    if (e.keyCode === 32 || e.keyCode === 83 || e.keyCode === 87 || e.keyCode === 65 || e.keyCode === 68) {
+    if (e.keyCode === 32 || e.keyCode === 83 || e.keyCode === 87 || e.keyCode === 65
+      || e.keyCode === 68 || e.keyCode === 16) {
       socket.emit('keypress' + room, socket.id, keyInput);
     }
   }
@@ -116,8 +121,12 @@ $(document).ready(function () {
       case 32:
         keyInput['shot'] = false;
         break;
+      case 16:
+        keyInput['shield'] = false;
+        break;
     }
-    if (e.keyCode === 32 || e.keyCode === 83 || e.keyCode === 87 || e.keyCode === 65 || e.keyCode === 68) {
+    if (e.keyCode === 32 || e.keyCode === 83 || e.keyCode === 87 || e.keyCode === 65
+      || e.keyCode === 68 || e.keyCode === 16) {
       socket.emit('keypress' + room, socket.id, keyInput);
     }
   }
