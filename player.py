@@ -3,6 +3,7 @@ from vector import Vector
 from gameelement import GameElement
 from bullet import Bullet
 import math
+from enum import Enum, auto
 
 
 class Player(GameElement):
@@ -12,6 +13,10 @@ class Player(GameElement):
     BULLET_SPEED = 500
     RADIUS = 20
     SHOT_COOLDOWN = 0.05
+
+    class AttackMode(Enum):
+        BLOCKING = auto()
+        SHOOTING = auto()
 
     def __init__(self, x=0, y=0, vx=0, vy=0):
         super().__init__(x, y, vx, vy)
@@ -26,6 +31,7 @@ class Player(GameElement):
         self.radius = Player.RADIUS
         self.cooldown = Player.SHOT_COOLDOWN
         self.mouseDir = Vector(1, 0)
+        self.attackMode = Player.AttackMode.SHOOTING
 
     def handleInput(self, input):
         self.input = input
@@ -33,6 +39,17 @@ class Player(GameElement):
     def handleMouse(self, mouseX, mouseY):
         self.mouseDir = (Vector(mouseX, mouseY).sub(
             self.pos.cpy())).nor()
+
+    def processAttack(self):
+        if (self.attackMode == Player.AttackMode.SHOOTING):
+            if (self.cooldown == 0 and self.input['shot']):
+                self.cooldown = Player.SHOT_COOLDOWN
+                self.bullets.append(
+                    Bullet(self.pos.cpy().add(self.mouseDir.cpy().times(self.radius)),
+                           self.mouseDir.getAngle(), Player.BULLET_SPEED))
+                self.attackMode = Player.AttackMode.BLOCKING
+        else:
+            pass
 
     def update(self, delta):
         self.cooldown = max(self.cooldown - delta, 0)
@@ -45,12 +62,8 @@ class Player(GameElement):
         self.vel.times(0.94)
         # radVector = Vector(self.radius, 0)
         # radVector.setAngle(self.vel.getAngle())
-        if (self.cooldown == 0 and self.input['shot']):
-            self.cooldown = Player.SHOT_COOLDOWN
-            self.bullets.append(
-                Bullet(self.pos.cpy().add(self.mouseDir.cpy().times(self.radius)),
-                       self.mouseDir.getAngle(), Player.BULLET_SPEED))
-            # self.input['shot'] = False
+        self.processAttack()
+        # self.input['shot'] = False
 
         for b in self.bullets:
             b.update(delta)
