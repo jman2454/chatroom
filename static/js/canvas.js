@@ -13,7 +13,7 @@ class Canvas {
     document.getElementById("sim").append(c);
   }
 
-  draw(player) {
+  drawObj(obj) {
     // this.canvas.fillStyle = 'black';
     // this.canvas.strokeStyle = 'black';
     // this.canvas.beginPath();
@@ -22,9 +22,11 @@ class Canvas {
     // this.canvas.ellipse(parseInt(player.x), this.element.height - parseInt(player.y), 20, 20, 10, 0, 2 * Math.PI);
     // this.canvas.stroke();
 
-    this.drawDot(player.x, player.y, player.radius);
+    this.drawDot(obj.x, obj.y, obj.radius);
     // this.drawDot(player.mouseX, player.mouseY, 10);
-    player.bullets.forEach(b => this.drawDot(b.x, b.y, b.radius));
+    if (obj.bullets) {
+      obj.bullets.forEach(b => this.drawDot(b.x, b.y, b.radius));
+    }
   }
 
   drawDot(x, y, radius) {

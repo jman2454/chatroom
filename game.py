@@ -3,6 +3,7 @@ import json
 from player import Player
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
 from gameelement import GameElement
+from sumoring import Sumoring
 from vector import Vector
 
 
@@ -15,6 +16,7 @@ class Game:
         self.pastFrame = 0
         self.socketio = socketio
         self.players = {}
+        self.ring = Sumoring()
         self.room = room
         self.socketio.on_event('new player' + room, self.addPlayer)
         self.socketio.on_event('keypress' + room, self.processInput)
@@ -23,11 +25,16 @@ class Game:
     def update(self, delta):
         for pID in self.players:
             self.players[pID].update(delta)
+            if (not self.ring.inRing(self.players[pID])):
+                #self.leave(pID, self.room)
+                self.players[pID]
+        self.ring.update(delta)
 
     def draw(self, delta):
-        emit('update', json.dumps(
-            {k: v.jsonify() for k, v in self.players.items()}
-        ), room=self.room)
+        dic = {}
+        dic['players'] = {k: v.jsonify() for k, v in self.players.items()}
+        dic['ring'] = self.ring.jsonify()
+        emit('update', json.dumps(dic), room=self.room)
 
     def render(self):
         running = True

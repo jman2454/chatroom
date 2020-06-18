@@ -261,17 +261,19 @@ $(document).ready(function () {
     $("#msgs").append(msg);
   });
 
-  socket.on('update', function (playerData) {
+  socket.on('update', function (gameData) {
+    var game = JSON.parse(gameData);
+    var players = game['players'];
+    var ring = game['ring'];
     typingcooldown = Math.max(0, typingcooldown - 0.01666);
     if (typingcooldown === 0) {
       $("#typing").hide();
       typingcooldown = COOLDOWN;
     }
-    if ("{}".localeCompare(playerData) === 0) return;
-    var players = JSON.parse(playerData);
     canvas.clear();
     for (var p in players) {
-      canvas.draw(players[p]);
+      canvas.drawObj(players[p]);
     }
+    // canvas.drawObj(ring);
   });
 })
