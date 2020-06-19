@@ -55,7 +55,8 @@ $(document).ready(function () {
     'up': false,
     'down': false,
     'shot': false,
-    'shield': false
+    'shield': false,
+    'dash': false
   }
 
   var mouseInput = {
@@ -92,7 +93,7 @@ $(document).ready(function () {
         keyInput['up'] = false;
         break;
       case 32:
-        keyInput['shot'] = true;
+        keyInput['dash'] = true;
         break;
       case 16:
         keyInput['shield'] = true;
@@ -119,7 +120,7 @@ $(document).ready(function () {
         keyInput['down'] = false;
         break;
       case 32:
-        keyInput['shot'] = false;
+        keyInput['dash'] = false;
         break;
       case 16:
         keyInput['shield'] = false;
