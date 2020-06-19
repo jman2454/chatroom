@@ -61,7 +61,7 @@ class Player(GameElement):
         self.cooldown = max(self.cooldown - delta, 0)
         self.pos.add(self.vel.cpy().times(delta))
         if (self.isMoving() and not self.wasMoving):
-            self.setSpeed(Player.DASH_SPEED)
+            self.setSpeed(max(Player.DASH_SPEED, self.oldVel.mag()))
         elif self.vel.mag() <= Player.TOP_SPEED and self.isMoving():
             self.setSpeed(Player.TOP_SPEED)
         self.wasMoving = self.isMoving()

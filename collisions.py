@@ -13,6 +13,7 @@ class Collisions:
                 ) + others[pID].getRadius()
                 p1.setPos(
                     others[pID].getPos().cpy().add(diffVec.times(dist)))
+                others[pID].getVel().add(diffVec.cpy().times(-5))
 
     def bulletShield(self, player, players):
         for pID in players:

@@ -289,7 +289,7 @@ $(document).ready(function () {
     for (var p in players) {
       if ((players[p]).active === true) {
         canvas.drawObj(players[p]);
-      } else if ((players[p]).active === false) {
+      } else if ((players[socket.id]).active === false) {
         leaveGame();
       }
     }
