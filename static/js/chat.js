@@ -220,10 +220,11 @@ $(document).ready(function () {
 
   socket.on('joined', function (msg) {
     var obj = JSON.parse(msg);
+    var gameLink = window.location.href.match(/.*:5000/);
     $("#msgs").append(obj.msg);
     room = obj.room;
     $("#name").html(`
-    Current Room: ` + obj.room + `<br><button id="leave">Leave Room</button>
+    Current Room: ` + obj.room + `<br>Game Link: ` + gameLink + `/game/` + room + `<br><button id="leave">Leave Room</button>
     `);
     $("#leave").click(function () {
       leaveGame();
