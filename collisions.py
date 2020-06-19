@@ -22,7 +22,7 @@ class Collisions:
                     if player.getShield().isActive() and \
                             player.getShield().collides(player.getPos(), b):
                         b.vel.times(-1)
-                    if player.collides(b):
+                    elif player.collides(b):
                         player.vel.setVec(b.getVel())
                         bullets.remove(b)
                         del b

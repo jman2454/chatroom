@@ -137,8 +137,6 @@ $(document).ready(function () {
     var y = e.pageY - bounds.y - scrollY;
     x *= canvas.getHtmlElement().width / bounds.width;
     y *= canvas.getHtmlElement().height / bounds.height;
-    // mouseInput.mouseX = x;
-    // mouseInput.mouseY = y;
     mouseInput['mouseX'] = x;
     mouseInput['mouseY'] = y;
   }
@@ -270,17 +268,19 @@ $(document).ready(function () {
     $("#msgs").append(msg);
   });
 
-  socket.on('update', function (playerData) {
+  socket.on('update', function (gameData) {
+    var game = JSON.parse(gameData);
+    var players = game['players'];
+    var ring = game['ring'];
     typingcooldown = Math.max(0, typingcooldown - 0.01666);
     if (typingcooldown === 0) {
       $("#typing").hide();
       typingcooldown = COOLDOWN;
     }
-    if ("{}".localeCompare(playerData) === 0) return;
-    var players = JSON.parse(playerData);
     canvas.clear();
+    canvas.drawRing(ring);
     for (var p in players) {
-      canvas.draw(players[p]);
+      canvas.drawObj(players[p]);
     }
   });
 })

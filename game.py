@@ -3,6 +3,7 @@ import json
 from player import Player
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
 from gameelement import GameElement
+from sumoring import Sumoring
 from vector import Vector
 from collisions import Collisions
 
@@ -16,6 +17,7 @@ class Game:
         self.pastFrame = 0
         self.socketio = socketio
         self.players = {}
+        self.ring = Sumoring()
         self.room = room
         self.socketio.on_event('new player' + room, self.addPlayer)
         self.socketio.on_event('keypress' + room, self.processInput)
@@ -37,14 +39,21 @@ class Game:
             #             self.players[pID2].getPos().cpy().add(diffVec.times(dist)))
 
         # self.collisions.update(self.players)
+            if (not self.ring.inRing(self.players[pID])):
+                # only dissapears if another player is present to refresh the canvas
+                self.leave(pID, self.room)
+        self.ring.update(delta)
 
     def draw(self, delta):
-        emit('update', json.dumps(
-            {k: v.jsonify() for k, v in self.players.items()}
-        ), room=self.room)
+        dic = {}
+        dic['players'] = {k: v.jsonify() for k, v in self.players.items()}
+        dic['ring'] = self.ring.jsonify()
+        emit('update', json.dumps(dic), room=self.room)
 
     def render(self):
         running = True
+        # added this line because otherwise the difference between 0 and delta is BIG BOG level large
+        self.currFrame = time.time()
         while (running):
             self.pastFrame = self.currFrame
             self.currFrame = time.time()
