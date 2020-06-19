@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from flask_socketio import SocketIO, send, emit, join_room, leave_room
+from flask_socketio import SocketIO, send, emit, join_room, leave_room, close_room
 import json
 from game import Game
 
@@ -75,11 +75,11 @@ def add_room(id, room):
         emit('error')
         return
     elif not room in rooms:
-        rooms[room] = [users[id][0]]
+        rooms[room] = [id]
         games[room] = Game(socketio, room)
         emit('new game', room=room)
     else:
-        rooms[room].append(users[id][0])
+        rooms[room].append(id)
     games[room].addPlayer(id)
     users[id][1] = room
     join_room(room)
@@ -96,15 +96,17 @@ def leave(id, room):
     leave_room(room)
     if id is None:
         return
-    if (games[users[id][1]].leave(id, users[id][1])):
-        game = games.pop(users[id][1], None)
+    if (games[room].leave(id, room)):
+        game = games.pop(room, None)
+        game.end()
         del game
     emit('someone else left', users[id][0] +
          ' has left the room.<br>', room=users[id][1])
     emit('left', "You left the room.<br>")
-    rooms[users[id][1]].remove(users[id][0])
-    if (rooms[users[id][1]] == []):
-        rooms.pop(users[id][1], None)
+    rooms[room].remove(id)
+    if (rooms[room] == []):
+        close_room(room)
+        rooms.pop(room, None)
     users[id][1] = None
 
 

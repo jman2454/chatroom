@@ -5,6 +5,7 @@ from flask_socketio import SocketIO, send, emit, join_room, leave_room
 from gameelement import GameElement
 from sumoring import Sumoring
 from vector import Vector
+from collisions import Collisions
 
 
 class Game:
@@ -21,13 +22,33 @@ class Game:
         self.socketio.on_event('new player' + room, self.addPlayer)
         self.socketio.on_event('keypress' + room, self.processInput)
         self.socketio.on_event('mousemove' + room, self.processCursor)
+        self.collisions = Collisions()
 
     def update(self, delta):
         for pID in self.players:
-            self.players[pID].update(delta)
-            if (not self.ring.inRing(self.players[pID])):
-                self.leave(pID, self.room) # only dissapears if another player is present to refresh the canvas
+            if self.players[pID].isActive():
+                self.players[pID].update(delta)
+                self.collisions.playerCollisions(
+                    self.players[pID], self.players)
+                self.collisions.bulletShield(self.players[pID], self.players)
+                # for pID2 in self.players:
+                #     if pID2 != pID and self.players[pID].collides(self.players[pID2]):
+                #         diffVec = self.players[pID].getPos().cpy().sub(
+                #             self.players[pID2].getPos()).nor()
+                #         dist = self.players[pID].getRadius(
+                #         ) + self.players[pID2].getRadius()
+                #         self.players[pID].setPos(
+                #             self.players[pID2].getPos().cpy().add(diffVec.times(dist)))
+
+            # self.collisions.update(self.players)
+                if (not self.ring.inRing(self.players[pID])):
+                    # only dissapears if another player is present to refresh the canvas
+                    # emit('remove handlers', pID, room=self.room)
+                    # toLeave.append(pID)
+                    self.players[pID].kill()
         self.ring.update(delta)
+        # for pID in toLeave:
+        #     self.leave(pID, self.room)
 
     def draw(self, delta):
         dic = {}
@@ -36,9 +57,10 @@ class Game:
         emit('update', json.dumps(dic), room=self.room)
 
     def render(self):
-        running = True
-        self.currFrame = time.time() # added this line because otherwise the difference between 0 and delta is BIG BOG level large
-        while (running):
+        self.running = True
+        # added this line because otherwise the difference between 0 and delta is BIG BOG level large
+        self.currFrame = time.time()
+        while (self.running):
             self.pastFrame = self.currFrame
             self.currFrame = time.time()
             dt = self.currFrame - self.pastFrame
@@ -47,6 +69,9 @@ class Game:
                 time.sleep(sleepTime)
             self.update(dt)
             self.draw(dt)
+
+    def end(self):
+        self.running = False
 
     def addPlayer(self, id):
         self.players[id] = Player(self.width/2, self.height/2)
