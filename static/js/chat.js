@@ -272,6 +272,6 @@ $(document).ready(function () {
     for (var p in players) {
       canvas.drawObj(players[p]);
     }
-    //canvas.drawObj(ring);
+    canvas.drawObj(ring);
   });
 })
