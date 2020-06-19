@@ -128,8 +128,6 @@ $(document).ready(function () {
     var y = e.pageY - bounds.y - scrollY;
     x *= canvas.getHtmlElement().width / bounds.width;
     y *= canvas.getHtmlElement().height / bounds.height;
-    // mouseInput.mouseX = x;
-    // mouseInput.mouseY = y;
     mouseInput['mouseX'] = x;
     mouseInput['mouseY'] = y;
   }
@@ -154,7 +152,7 @@ $(document).ready(function () {
     window.removeEventListener('keydown', down);
     window.removeEventListener("mousedown", mouseDown);
     window.removeEventListener("mouseup", mouseUp);
-    $("#gametest").off('mousemove', emitMousePos);
+    $("#gametest").off('mousemove', getMousePos);
     clearInterval(interval);
   }
 

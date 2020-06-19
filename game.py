@@ -25,9 +25,8 @@ class Game:
     def update(self, delta):
         for pID in self.players:
             self.players[pID].update(delta)
-            if (not self.ring.inRing(self.players[pID])):
-                #self.leave(pID, self.room)
-                self.players[pID]
+            # if (not self.ring.inRing(self.players[pID])):
+            #     self.leave(pID, self.room)
         self.ring.update(delta)
 
     def draw(self, delta):
