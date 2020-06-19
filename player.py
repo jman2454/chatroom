@@ -95,8 +95,8 @@ class Player(GameElement):
         return self.pos
 
     def collides(self, player):
-        return self.pos.cpy().sub(player.pos).mag() <=
-        self.radius + player.getRadius()
+        return self.pos.cpy().sub(player.pos).mag() <= \
+            self.radius + player.getRadius()
 
     def isMoving(self):
         return self.input['left'] or self.input['right'] or self.input['up'] or self.input['down']
