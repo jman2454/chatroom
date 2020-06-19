@@ -37,7 +37,7 @@ class Player(GameElement):
         self.mouseDir = Vector(1, 0)
         self.attackMode = Player.AttackMode.SHOOTING
         self.shield = Shield(self.pos, self.radius * 1.2)
-        self.melee = Melee(self.pos, self.radius * 2)
+        self.melee = Melee(self.pos, self.radius * 1.5)
 
     def handleInput(self, input):
         self.input = input
@@ -46,7 +46,7 @@ class Player(GameElement):
         self.mouseDir = (Vector(mouseX, mouseY).sub(
             self.pos.cpy())).nor()
 
-    def processAttack(self):
+    def processAttack(self, delta):
         if (self.attackMode == Player.AttackMode.SHOOTING):
             if (self.cooldown == 0 and self.input['shot']):
                 self.cooldown = Player.SHOT_COOLDOWN
@@ -58,11 +58,13 @@ class Player(GameElement):
         else:
             self.shield.setActive(self.input['shield'])
             self.shield.setAngle(self.mouseDir.getAngle())
-            self.melee.setAngle(self.mouseDir.getAngle())
             if (self.cooldown == 0 and self.input['shot']):
                 # TODO: Code for melee and successful melee
                 self.cooldown = Player.SHOT_COOLDOWN
                 self.melee.setActive()
+            self.melee.update(delta)
+            if not self.melee.isActive():
+                self.melee.setAngle(self.mouseDir.getAngle())
 
     def setAttackMode(self, mode):
         self.attackMode = mode
@@ -81,7 +83,7 @@ class Player(GameElement):
             self.setSpeed(Player.TOP_SPEED)
         self.wasMoving = self.isMoving()
         self.vel.times(0.94)
-        self.processAttack()
+        self.processAttack(delta)
 
         for b in self.bullets:
             b.update(delta)
