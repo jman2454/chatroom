@@ -25,28 +25,30 @@ class Game:
         self.collisions = Collisions()
 
     def update(self, delta):
-        toLeave = []
         for pID in self.players:
-            self.players[pID].update(delta)
-            self.collisions.playerCollisions(self.players[pID], self.players)
-            self.collisions.bulletShield(self.players[pID], self.players)
-            # for pID2 in self.players:
-            #     if pID2 != pID and self.players[pID].collides(self.players[pID2]):
-            #         diffVec = self.players[pID].getPos().cpy().sub(
-            #             self.players[pID2].getPos()).nor()
-            #         dist = self.players[pID].getRadius(
-            #         ) + self.players[pID2].getRadius()
-            #         self.players[pID].setPos(
-            #             self.players[pID2].getPos().cpy().add(diffVec.times(dist)))
+            if self.players[pID].isActive():
+                self.players[pID].update(delta)
+                self.collisions.playerCollisions(
+                    self.players[pID], self.players)
+                self.collisions.bulletShield(self.players[pID], self.players)
+                # for pID2 in self.players:
+                #     if pID2 != pID and self.players[pID].collides(self.players[pID2]):
+                #         diffVec = self.players[pID].getPos().cpy().sub(
+                #             self.players[pID2].getPos()).nor()
+                #         dist = self.players[pID].getRadius(
+                #         ) + self.players[pID2].getRadius()
+                #         self.players[pID].setPos(
+                #             self.players[pID2].getPos().cpy().add(diffVec.times(dist)))
 
-        # self.collisions.update(self.players)
-            if (not self.ring.inRing(self.players[pID])):
-                # only dissapears if another player is present to refresh the canvas
-                emit('remove handlers', pID, room=self.room)
-                toLeave.append(pID)
+            # self.collisions.update(self.players)
+                if (not self.ring.inRing(self.players[pID])):
+                    # only dissapears if another player is present to refresh the canvas
+                    # emit('remove handlers', pID, room=self.room)
+                    # toLeave.append(pID)
+                    self.players[pID].kill()
         self.ring.update(delta)
-        for pID in toLeave:
-            self.leave(pID, self.room)
+        # for pID in toLeave:
+        #     self.leave(pID, self.room)
 
     def draw(self, delta):
         dic = {}

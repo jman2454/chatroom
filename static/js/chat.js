@@ -157,6 +157,7 @@ $(document).ready(function () {
   }
 
   function leaveGame() {
+    socket.emit('leave room', socket.id, room);
     window.removeEventListener('keyup', up);
     window.removeEventListener('keydown', down);
     window.removeEventListener("mousedown", mouseDown);
@@ -225,7 +226,6 @@ $(document).ready(function () {
     Current Room: ` + obj.room + `<br><button id="leave">Leave Room</button>
     `);
     $("#leave").click(function () {
-      socket.emit('leave room', socket.id, obj.room);
       leaveGame();
     });
     $("#txt").html(`
@@ -286,7 +286,11 @@ $(document).ready(function () {
     canvas.clear();
     canvas.drawRing(ring);
     for (var p in players) {
-      canvas.drawObj(players[p]);
+      if ((players[p]).active === true) {
+        canvas.drawObj(players[p]);
+      } else if ((players[p]).active === false) {
+        leaveGame();
+      }
     }
   });
 })

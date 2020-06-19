@@ -29,6 +29,7 @@ class Player(GameElement):
         self.input['down'] = False
         self.input['shot'] = False
         self.wasMoving = False
+        self.active = True
         self.bullets = []
         self.radius = Player.RADIUS
         self.cooldown = Player.SHOT_COOLDOWN
@@ -74,6 +75,12 @@ class Player(GameElement):
 
     def goBack(self, delta):
         self.pos.sub(self.oldVel.cpy().times(delta))
+
+    def kill(self):
+        self.active = False
+
+    def isActive(self):
+        return self.active
 
     def getRadius(self):
         return self.radius
@@ -126,5 +133,6 @@ class Player(GameElement):
             'y': self.getY(),
             'radius': self.radius,
             'shield': self.shield.jsonify(),
+            'active': self.active,
             'bullets': [b.jsonify() for b in self.bullets]
         }
