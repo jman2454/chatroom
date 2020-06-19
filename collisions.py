@@ -25,6 +25,7 @@ class Collisions:
                     b.vel.times(-1)
                     b.setDeflected(True)
                     player.setAttackMode(Player.AttackMode.SHOOTING)
+                    player.getShield().toggleActive()
                 elif (not players[pID] == player or b.getDeflected()) and player.collides(b):
                     player.vel.setVec(b.getVel())
                     bullets.remove(b)

@@ -8,7 +8,7 @@ class Shield(GameElement):
         super().__init__(pos.x, pos.y)
         self.radius = radius
         self.angle = 0
-        self.arcRange = math.pi/6
+        self.arcRange = math.pi/5
         self.active = False
 
     def jsonify(self):
