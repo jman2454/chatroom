@@ -64,7 +64,7 @@ class Game:
             self.pastFrame = self.currFrame
             self.currFrame = time.time()
             dt = self.currFrame - self.pastFrame
-            sleepTime = 1./35 - dt
+            sleepTime = 1./60 - dt
             if sleepTime > 0:
                 time.sleep(sleepTime)
             self.update(dt)
