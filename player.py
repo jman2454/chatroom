@@ -56,6 +56,9 @@ class Player(GameElement):
             self.shield.setActive(self.input['shield'])
             self.shield.setAngle(self.mouseDir.getAngle())
 
+    def setAttackMode(self, mode):
+        self.attackMode = mode
+
     def update(self, delta):
         self.oldVel = self.vel
         self.cooldown = max(self.cooldown - delta, 0)
