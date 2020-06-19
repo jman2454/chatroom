@@ -25,8 +25,8 @@ class Game:
     def update(self, delta):
         for pID in self.players:
             self.players[pID].update(delta)
-            # if (not self.ring.inRing(self.players[pID])):
-            #     self.leave(pID, self.room)
+            if (not self.ring.inRing(self.players[pID])):
+                self.leave(pID, self.room) # only dissapears if another player is presents to refresh the canvas
         self.ring.update(delta)
 
     def draw(self, delta):

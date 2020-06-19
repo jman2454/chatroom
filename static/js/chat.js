@@ -152,11 +152,7 @@ $(document).ready(function () {
     window.removeEventListener('keydown', down);
     window.removeEventListener("mousedown", mouseDown);
     window.removeEventListener("mouseup", mouseUp);
-<<<<<<< HEAD
-    $("#gametest").off('mousemove', getMousePos);
-=======
     $("#gametest").off();
->>>>>>> development
     clearInterval(interval);
   }
 
@@ -276,6 +272,6 @@ $(document).ready(function () {
     for (var p in players) {
       canvas.drawObj(players[p]);
     }
-    // canvas.drawObj(ring);
+    //canvas.drawObj(ring);
   });
 })
