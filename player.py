@@ -21,6 +21,7 @@ class Player(GameElement):
 
     def __init__(self, x=0, y=0, vx=0, vy=0):
         super().__init__(x, y, vx, vy)
+        self.oldVel = self.vel
         self.input = {}
         self.input['left'] = False
         self.input['right'] = False
@@ -55,6 +56,7 @@ class Player(GameElement):
             self.shield.setAngle(self.mouseDir.getAngle())
 
     def update(self, delta):
+        self.oldVel = self.vel
         self.cooldown = max(self.cooldown - delta, 0)
         self.pos.add(self.vel.cpy().times(delta))
         if (self.isMoving() and not self.wasMoving):
@@ -69,6 +71,9 @@ class Player(GameElement):
             b.update(delta)
             if (not b.inBounds()):
                 self.bullets.remove(b)
+
+    def goBack(self, delta):
+        self.pos.sub(self.oldVel.cpy().times(delta))
 
     def getRadius(self):
         return self.radius
@@ -95,6 +100,12 @@ class Player(GameElement):
     def setPosRelative(self, additionVector):
         self.pos.add(additionVector)
 
+    def setPos(self, v):
+        self.pos.setVec(v)
+
+    def getShield(self):
+        return self.shield
+
     def setSpeed(self, speed):
         if self.input['left']:
             self.vel.setVal(x=-speed)
@@ -105,6 +116,9 @@ class Player(GameElement):
             self.vel.setVal(y=speed)
         elif self.input['down']:
             self.vel.setVal(y=-speed)
+
+    def getBullets(self):
+        return self.bullets
 
     def jsonify(self):
         return {

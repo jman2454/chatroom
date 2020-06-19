@@ -10,6 +10,10 @@ class Vector:
         self.x = x or self.x
         self.y = y or self.y
 
+    def setVec(self, v):
+        self.x = v.x
+        self.y = v.y
+
     def times(self, c):
         self.x *= c
         self.y *= c
@@ -35,9 +39,6 @@ class Vector:
             self.y -= y
         return self
 
-    def dist(self, other):
-        return self.cpy().sub(other).mag()
-
     def setAngle(self, angle, degrees=False):
         mag = self.mag()
         self.x = mag * math.cos(math.degrees(angle) if degrees else angle)
@@ -58,3 +59,8 @@ class Vector:
         self.x /= mag
         self.y /= mag
         return self
+
+    @staticmethod
+    def angleDiff(a1, a2):
+        phi = abs(a2 - a1) % math.pi * 2
+        return 2 * math.pi - phi if phi > math.pi else phi

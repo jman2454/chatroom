@@ -1,5 +1,6 @@
 from gameelement import GameElement
 import math
+from vector import Vector
 
 
 class Shield(GameElement):
@@ -18,6 +19,9 @@ class Shield(GameElement):
             'radius': self.radius
         }
 
+    def isActive(self):
+        return self.active
+
     def setAngle(self, angle):
         self.angle = angle
 
@@ -27,3 +31,11 @@ class Shield(GameElement):
 
     def setActive(self, active):
         self.active = active
+
+    def collides(self, pPos, other):
+        # angle = self.pos.cpy().sub(other.getPos()).getAngle()
+        angle = other.getPos().cpy().sub(pPos).getAngle()
+        # startAng = self.angle - self.arcRange/2
+        # endAng = self.angle + self.arcRange/2
+        if Vector.angleDiff(angle, self.angle) < self.arcRange:
+            return pPos.dist(other.getPos()) <= self.radius + other.getRadius()

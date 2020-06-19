@@ -25,7 +25,18 @@ class Game:
     def update(self, delta):
         for pID in self.players:
             self.players[pID].update(delta)
-        self.collisions.update(self.players)
+            self.collisions.playerCollisions(self.players[pID], self.players)
+            self.collisions.bulletShield(self.players[pID], self.players)
+            # for pID2 in self.players:
+            #     if pID2 != pID and self.players[pID].collides(self.players[pID2]):
+            #         diffVec = self.players[pID].getPos().cpy().sub(
+            #             self.players[pID2].getPos()).nor()
+            #         dist = self.players[pID].getRadius(
+            #         ) + self.players[pID2].getRadius()
+            #         self.players[pID].setPos(
+            #             self.players[pID2].getPos().cpy().add(diffVec.times(dist)))
+
+        # self.collisions.update(self.players)
 
     def draw(self, delta):
         emit('update', json.dumps(
@@ -38,7 +49,7 @@ class Game:
             self.pastFrame = self.currFrame
             self.currFrame = time.time()
             dt = self.currFrame - self.pastFrame
-            sleepTime = 1./60 - dt
+            sleepTime = 1./35 - dt
             if sleepTime > 0:
                 time.sleep(sleepTime)
             self.update(dt)

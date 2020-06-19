@@ -20,3 +20,12 @@ class Bullet(GameElement):
         j = super().jsonify()
         j['radius'] = self.radius
         return j
+
+    def getVel(self):
+        return self.vel.cpy()
+
+    def getPos(self):
+        return self.pos
+
+    def getRadius(self):
+        return self.radius

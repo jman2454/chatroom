@@ -155,7 +155,7 @@ $(document).ready(function () {
     window.addEventListener("mousedown", mouseDown);
     window.addEventListener("mouseup", mouseUp);
     $("#gametest").on('mousemove', getMousePos);
-    interval = window.setInterval(function () { emitMousePos(mouseInput) }, 30);
+    interval = window.setInterval(function () { emitMousePos(mouseInput) }, 50);
   }
 
   function leaveGame() {
