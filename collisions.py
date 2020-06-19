@@ -15,25 +15,29 @@ class Collisions:
                     others[pID].getPos().cpy().add(diffVec.times(dist)))
 
     def bulletShield(self, player, players):
-        if not player.getShield().isActive():
-            return
         for pID in players:
-            bullets = players[pID].getBullets()
-            for b in bullets:
-                if player.getShield().collides(player.getPos(), b):
-                    b.vel.times(-1)
-                    # player.setVel(b.getVel().times(-1))
-                    # bullets.remove(b)
-                # plist = [players[k] for k in players]
-                # for i in range(len(plist)):
-                #     for o in range(i + 1, len(plist)):
-                #         p = plist[i]
-                #         p2 = plist[o]
-                #         if p != p2 and p.collides(p2):
-                #             diffVec = p.getPos().cpy().sub(p2.getPos()).nor()
-                #             dist = p.getPos().dist(p2.getPos())
-                #             v1 = p.getVel().mag()
-                #             v2 = p2.getVel().mag()
-                #             totalVel = v1 + v2
-                #             p.setPosRelative(diffVec.cpy().times(dist * v1/totalVel))
-                #             p2.setPosRelative(diffVec.cpy().times(-dist * v2/totalVel))
+            if not players[pID] == player:
+                bullets = players[pID].getBullets()
+                for b in bullets:
+                    if player.getShield().isActive() and \
+                            player.getShield().collides(player.getPos(), b):
+                        b.vel.times(-1)
+                    if player.collides(b):
+                        player.vel.setVec(b.getVel())
+                        bullets.remove(b)
+                        del b
+                        # player.setVel(b.getVel().times(-1))
+                        # bullets.remove(b)
+                        # plist = [players[k] for k in players]
+                        # for i in range(len(plist)):
+                        #     for o in range(i + 1, len(plist)):
+                        #         p = plist[i]
+                        #         p2 = plist[o]
+                        #         if p != p2 and p.collides(p2):
+                        #             diffVec = p.getPos().cpy().sub(p2.getPos()).nor()
+                        #             dist = p.getPos().dist(p2.getPos())
+                        #             v1 = p.getVel().mag()
+                        #             v2 = p2.getVel().mag()
+                        #             totalVel = v1 + v2
+                        #             p.setPosRelative(diffVec.cpy().times(dist * v1/totalVel))
+                        #             p2.setPosRelative(diffVec.cpy().times(-dist * v2/totalVel))
