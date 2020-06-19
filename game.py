@@ -57,10 +57,10 @@ class Game:
         emit('update', json.dumps(dic), room=self.room)
 
     def render(self):
-        running = True
+        self.running = True
         # added this line because otherwise the difference between 0 and delta is BIG BOG level large
         self.currFrame = time.time()
-        while (running):
+        while (self.running):
             self.pastFrame = self.currFrame
             self.currFrame = time.time()
             dt = self.currFrame - self.pastFrame
@@ -69,6 +69,9 @@ class Game:
                 time.sleep(sleepTime)
             self.update(dt)
             self.draw(dt)
+
+    def end(self):
+        self.running = False
 
     def addPlayer(self, id):
         self.players[id] = Player(self.width/2, self.height/2)

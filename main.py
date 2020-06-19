@@ -98,6 +98,7 @@ def leave(id, room):
         return
     if (games[users[id][1]].leave(id, users[id][1])):
         game = games.pop(users[id][1], None)
+        game.end()
         del game
     emit('someone else left', users[id][0] +
          ' has left the room.<br>', room=users[id][1])

@@ -276,6 +276,7 @@ $(document).ready(function () {
 
   socket.on('update', function (gameData) {
     var game = JSON.parse(gameData);
+    console.log(game);
     var players = game['players'];
     var ring = game['ring'];
     typingcooldown = Math.max(0, typingcooldown - 0.01666);
