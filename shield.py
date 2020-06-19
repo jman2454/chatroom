@@ -29,7 +29,7 @@ class Shield(GameElement):
         self.active = not self.active
         return self.active
 
-    def setActive(self, active):
+    def setActive(self, active=True):
         self.active = active
 
     def collides(self, pPos, other):

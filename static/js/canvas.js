@@ -30,6 +30,14 @@ class Canvas {
           'end': obj.shield.angle + obj.shield.arc / 2
         });
     }
+
+    if (obj.melee && obj.melee.active === true) {
+      this.drawDot(obj.x, obj.y, obj.melee.radius, undefined, undefined,
+        {
+          'start': obj.melee.angle - obj.melee.arc / 2,
+          'end': obj.melee.angle + obj.melee.arc / 2
+        });
+    }
     // this.drawDot(player.mouseX, player.mouseY, 10);
     if (obj.bullets) {
       obj.bullets.forEach(b => this.drawDot(b.x, b.y, b.radius, undefined, undefined));
