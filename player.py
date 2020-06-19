@@ -55,6 +55,9 @@ class Player(GameElement):
         else:
             self.shield.setActive(self.input['shield'])
             self.shield.setAngle(self.mouseDir.getAngle())
+            if (self.cooldown == 0 and self.input['shot']):
+                # TODO: Code for melee and successful melee
+                pass
 
     def setAttackMode(self, mode):
         self.attackMode = mode
@@ -92,8 +95,8 @@ class Player(GameElement):
         return self.pos
 
     def collides(self, player):
-        return self.pos.cpy().sub(player.pos).mag() <= \
-            self.radius + player.getRadius()
+        return self.pos.cpy().sub(player.pos).mag() <=
+        self.radius + player.getRadius()
 
     def isMoving(self):
         return self.input['left'] or self.input['right'] or self.input['up'] or self.input['down']
