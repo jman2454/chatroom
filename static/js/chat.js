@@ -269,9 +269,9 @@ $(document).ready(function () {
       typingcooldown = COOLDOWN;
     }
     canvas.clear();
+    canvas.drawRing(ring);
     for (var p in players) {
       canvas.drawObj(players[p]);
     }
-    canvas.drawObj(ring);
   });
 })
