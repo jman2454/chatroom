@@ -8,8 +8,8 @@ class Sumoring(GameElement):
         self.radius = r #(r*math.sqrt(2))/2
     
     def update(self, delta):
-        if delta<self.radius: # when server starts, delta hUgE and then later set to 0 and everything fine
-            self.radius = max(self.radius - delta, 0)
+        #if delta<self.radius: # when server starts, delta hUgE and then later set to 0 and everything fine
+        self.radius = max(self.radius - delta, 0)
 
     def getX(self):
         return self.pos.x

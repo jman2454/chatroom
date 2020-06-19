@@ -26,7 +26,7 @@ class Game:
         for pID in self.players:
             self.players[pID].update(delta)
             if (not self.ring.inRing(self.players[pID])):
-                self.leave(pID, self.room) # only dissapears if another player is presents to refresh the canvas
+                self.leave(pID, self.room) # only dissapears if another player is present to refresh the canvas
         self.ring.update(delta)
 
     def draw(self, delta):
@@ -37,6 +37,7 @@ class Game:
 
     def render(self):
         running = True
+        self.currFrame = time.time() # added this line because otherwise the difference between 0 and delta is BIG BOG level large
         while (running):
             self.pastFrame = self.currFrame
             self.currFrame = time.time()
