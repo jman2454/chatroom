@@ -25,6 +25,7 @@ class Game:
         self.collisions = Collisions()
 
     def update(self, delta):
+        toLeave = []
         for pID in self.players:
             self.players[pID].update(delta)
             self.collisions.playerCollisions(self.players[pID], self.players)
@@ -41,8 +42,11 @@ class Game:
         # self.collisions.update(self.players)
             if (not self.ring.inRing(self.players[pID])):
                 # only dissapears if another player is present to refresh the canvas
-                self.leave(pID, self.room)
+                emit('remove handlers', pID, room=self.room)
+                toLeave.append(pID)
         self.ring.update(delta)
+        for pID in toLeave:
+            self.leave(pID, self.room)
 
     def draw(self, delta):
         dic = {}

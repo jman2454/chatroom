@@ -16,28 +16,28 @@ class Collisions:
 
     def bulletShield(self, player, players):
         for pID in players:
-            if not players[pID] == player:
-                bullets = players[pID].getBullets()
-                for b in bullets:
-                    if player.getShield().isActive() and \
-                            player.getShield().collides(player.getPos(), b):
-                        b.vel.times(-1)
-                    elif player.collides(b):
-                        player.vel.setVec(b.getVel())
-                        bullets.remove(b)
-                        del b
-                        # player.setVel(b.getVel().times(-1))
-                        # bullets.remove(b)
-                        # plist = [players[k] for k in players]
-                        # for i in range(len(plist)):
-                        #     for o in range(i + 1, len(plist)):
-                        #         p = plist[i]
-                        #         p2 = plist[o]
-                        #         if p != p2 and p.collides(p2):
-                        #             diffVec = p.getPos().cpy().sub(p2.getPos()).nor()
-                        #             dist = p.getPos().dist(p2.getPos())
-                        #             v1 = p.getVel().mag()
-                        #             v2 = p2.getVel().mag()
-                        #             totalVel = v1 + v2
-                        #             p.setPosRelative(diffVec.cpy().times(dist * v1/totalVel))
-                        #             p2.setPosRelative(diffVec.cpy().times(-dist * v2/totalVel))
+            bullets = players[pID].getBullets()
+            for b in bullets:
+                if not players[pID] == player and player.getShield().isActive() and \
+                        player.getShield().collides(player.getPos(), b):
+                    b.vel.times(-1)
+                    b.setDeflected(True)
+                elif (not players[pID] == player or b.getDeflected()) and player.collides(b):
+                    player.vel.setVec(b.getVel())
+                    bullets.remove(b)
+                    del b
+                    # player.setVel(b.getVel().times(-1))
+                    # bullets.remove(b)
+                    # plist = [players[k] for k in players]
+                    # for i in range(len(plist)):
+                    #     for o in range(i + 1, len(plist)):
+                    #         p = plist[i]
+                    #         p2 = plist[o]
+                    #         if p != p2 and p.collides(p2):
+                    #             diffVec = p.getPos().cpy().sub(p2.getPos()).nor()
+                    #             dist = p.getPos().dist(p2.getPos())
+                    #             v1 = p.getVel().mag()
+                    #             v2 = p2.getVel().mag()
+                    #             totalVel = v1 + v2
+                    #             p.setPosRelative(diffVec.cpy().times(dist * v1/totalVel))
+                    #             p2.setPosRelative(diffVec.cpy().times(-dist * v2/totalVel))

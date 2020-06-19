@@ -170,6 +170,12 @@ $(document).ready(function () {
     // socket.emit('new user', socket.id);
   });
 
+  socket.on('remove handlers', function (id) {
+    if (id === socket.id) {
+      leaveGame()
+    }
+  });
+
   $("#create").click(function () {
     socket.join($("#sessionid").val());
   })

@@ -12,6 +12,13 @@ class Bullet(GameElement):
         self.vel = Vector(speed, 0)
         self.vel.setAngle(direction)
         self.radius = Bullet.BULLET_RADIUS
+        self.deflected = False
+
+    def setDeflected(self, d):
+        self.deflected = d
+
+    def getDeflected(self):
+        return self.deflected
 
     def update(self, delta):
         self.pos.add(self.vel.cpy().times(delta))
