@@ -233,7 +233,11 @@ $(document).ready(function () {
     if (obj.isRunning === false) {
       $("#readyup").html(obj.ready[0] + " / " + obj.ready[1] + " players ready");
       $("#readyButton").html("Ready Up");
-      $("#readyButton").show();
+      console.log(typeof obj.newUser);
+      console.log(typeof socket.id);
+      if (obj.newUser === socket.id) {
+        $("#readyButton").show();
+      }
     }
     $("#leave").click(function () {
       leaveGame();

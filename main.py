@@ -96,6 +96,7 @@ def add_room(id, room):
         reduce(lambda acc, i: acc +
                (1 if users[i][1] == room and users[i][2] else 0), games[room].getPlayers(), 0),
         len(games[room].getPlayers())]
+    data['newUser'] = id
     data['isRunning'] = games[room].isRunning()
     emit('joined', json.dumps(data),
          room=room)
@@ -121,8 +122,7 @@ def readyUp(id, room):
         'total': len(games[room].getPlayers())
     }
     if not allReady:
-        outFile.write(readyUsers)
-        emit('readied', json.dumps(readyUsers), room=room)
+        emit('readied', json.dumps(readyUsers), room=room, include_self=True)
     else:
         for i in games[room].getPlayers():
             users[i][2] = False
