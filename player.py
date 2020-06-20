@@ -37,7 +37,7 @@ class Player(GameElement):
         self.mouseDir = Vector(1, 0)
         self.attackMode = Player.AttackMode.SHOOTING
         self.shield = Shield(self.pos, self.radius * 1.2)
-        self.melee = Melee(self.pos, self.radius * 1.5)
+        self.melee = Melee(self.pos, self.radius * 1.8)
 
     def handleInput(self, input):
         self.input = input
