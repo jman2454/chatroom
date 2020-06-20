@@ -23,6 +23,13 @@ class Game:
         self.socketio.on_event('keypress' + room, self.processInput)
         self.socketio.on_event('mousemove' + room, self.processCursor)
         self.collisions = Collisions()
+        self.running = False
+
+    def isRunning(self):
+        return self.running
+
+    def getPlayers(self):
+        return [i for i in self.players]
 
     def update(self, delta):
         for pID in self.players:
@@ -59,7 +66,6 @@ class Game:
         emit('update', json.dumps(dic), room=self.room)
 
     def render(self):
-        self.running = True
         # added this line because otherwise the difference between 0 and delta is BIG BOG level large
         self.currFrame = time.time()
         while (self.running):
@@ -70,9 +76,12 @@ class Game:
             if sleepTime > 0:
                 time.sleep(sleepTime)
             self.update(dt)
+            if not self.running:
+                break
             self.draw(dt)
 
     def end(self):
+        self.players = {}
         self.running = False
 
     def addPlayer(self, id):
@@ -96,6 +105,7 @@ class Game:
         )
 
     def start(self):
+        self.running = True
         self.render()
 
     def leave(self, id, room):
