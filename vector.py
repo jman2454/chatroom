@@ -56,6 +56,10 @@ class Vector:
 
     def nor(self):
         mag = self.mag()
+        if mag == 0:
+            self.x = 1
+            self.y = 0
+            return self
         self.x /= mag
         self.y /= mag
         return self

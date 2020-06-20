@@ -16,6 +16,16 @@ class Collisions:
                     others[pID].getPos().cpy().add(diffVec.times(dist)))
                 others[pID].getVel().add(diffVec.cpy().times(-5))
 
+    def meleeCollisions(self, p1, others):
+        if not p1.getMelee().isActive():
+            return
+        for pID in others:
+            if others[pID] != p1 and \
+                    p1.getMelee().collides(p1.getPos(), others[pID]):
+                vV = others[pID].getPos().cpy().sub(p1.getPos()).nor()
+                others[pID].setVel(vV.times(600))
+                p1.setAttackMode(Player.AttackMode.SHOOTING)
+
     def bulletShield(self, player, players):
         for pID in players:
             bullets = players[pID].getBullets()

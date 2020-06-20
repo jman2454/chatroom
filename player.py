@@ -5,6 +5,7 @@ from bullet import Bullet
 import math
 from enum import Enum, auto
 from shield import Shield
+from melee import Melee
 
 
 class Player(GameElement):
@@ -36,6 +37,7 @@ class Player(GameElement):
         self.mouseDir = Vector(1, 0)
         self.attackMode = Player.AttackMode.SHOOTING
         self.shield = Shield(self.pos, self.radius * 1.2)
+        self.melee = Melee(self.pos, self.radius * 1.8)
 
     def handleInput(self, input):
         self.input = input
@@ -44,7 +46,7 @@ class Player(GameElement):
         self.mouseDir = (Vector(mouseX, mouseY).sub(
             self.pos.cpy())).nor()
 
-    def processAttack(self):
+    def processAttack(self, delta):
         if (self.attackMode == Player.AttackMode.SHOOTING):
             if (self.cooldown == 0 and self.input['shot']):
                 self.cooldown = Player.SHOT_COOLDOWN
@@ -52,15 +54,25 @@ class Player(GameElement):
                     Bullet(self.pos.cpy().add(self.mouseDir.cpy().times(self.radius)),
                            self.mouseDir.getAngle(), Player.BULLET_SPEED))
                 self.attackMode = Player.AttackMode.BLOCKING
+                self.input['shot'] = False
         else:
             self.shield.setActive(self.input['shield'])
             self.shield.setAngle(self.mouseDir.getAngle())
             if (self.cooldown == 0 and self.input['shot']):
                 # TODO: Code for melee and successful melee
-                pass
+                self.cooldown = Player.SHOT_COOLDOWN
+                self.melee.setActive()
+            self.melee.update(delta)
+            if not self.melee.isActive():
+                self.melee.setAngle(self.mouseDir.getAngle())
 
     def setAttackMode(self, mode):
         self.attackMode = mode
+        if (self.shield.isActive()):
+            self.shield.setActive(False)
+        if (self.melee.isActive()):
+            self.melee.setActive(False)
+            self.input['shot'] = False
 
     def update(self, delta):
         self.oldVel = self.vel
@@ -72,7 +84,7 @@ class Player(GameElement):
             self.setSpeed(Player.TOP_SPEED)
         self.wasMoving = self.isMoving()
         self.vel.times(0.94)
-        self.processAttack()
+        self.processAttack(delta)
 
         for b in self.bullets:
             b.update(delta)
@@ -110,6 +122,9 @@ class Player(GameElement):
     def getVel(self):
         return self.vel
 
+    def getMelee(self):
+        return self.melee
+
     def setPosRelative(self, additionVector):
         self.pos.add(additionVector)
 
@@ -118,6 +133,9 @@ class Player(GameElement):
 
     def getShield(self):
         return self.shield
+
+    def setVel(self, v):
+        self.vel.setVec(v)
 
     def setSpeed(self, speed):
         if self.input['left']:
@@ -139,6 +157,7 @@ class Player(GameElement):
             'y': self.getY(),
             'radius': self.radius,
             'shield': self.shield.jsonify(),
+            'melee': self.melee.jsonify(),
             'active': self.active,
             'bullets': [b.jsonify() for b in self.bullets]
         }

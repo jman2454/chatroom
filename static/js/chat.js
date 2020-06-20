@@ -157,13 +157,13 @@ $(document).ready(function () {
   }
 
   function leaveGame() {
-    socket.emit('leave room', socket.id, room);
     window.removeEventListener('keyup', up);
     window.removeEventListener('keydown', down);
     window.removeEventListener("mousedown", mouseDown);
     window.removeEventListener("mouseup", mouseUp);
     $("#gametest").off();
     clearInterval(interval);
+    socket.emit('leave room', socket.id, room);
   }
 
   socket.on('connect', function () {
@@ -171,11 +171,11 @@ $(document).ready(function () {
     // socket.emit('new user', socket.id);
   });
 
-  socket.on('remove handlers', function (id) {
-    if (id === socket.id) {
-      leaveGame()
-    }
-  });
+  // socket.on('remove handlers', function (id) {
+  //   if (id === socket.id) {
+  //     leaveGame()
+  //   }
+  // });
 
   $("#create").click(function () {
     socket.join($("#sessionid").val());
@@ -285,11 +285,12 @@ $(document).ready(function () {
     }
     canvas.clear();
     canvas.drawRing(ring);
+    if ((players[socket.id]).active === false) {
+      leaveGame();
+    }
     for (var p in players) {
       if ((players[p]).active === true) {
         canvas.drawObj(players[p]);
-      } else if ((players[socket.id]).active === false) {
-        leaveGame();
       }
     }
   });

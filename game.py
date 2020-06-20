@@ -31,6 +31,8 @@ class Game:
                 self.collisions.playerCollisions(
                     self.players[pID], self.players)
                 self.collisions.bulletShield(self.players[pID], self.players)
+                self.collisions.meleeCollisions(
+                    self.players[pID], self.players)
                 # for pID2 in self.players:
                 #     if pID2 != pID and self.players[pID].collides(self.players[pID2]):
                 #         diffVec = self.players[pID].getPos().cpy().sub(

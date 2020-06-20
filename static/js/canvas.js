@@ -30,6 +30,14 @@ class Canvas {
           'end': obj.shield.angle + obj.shield.arc / 2
         });
     }
+
+    if (obj.melee && obj.melee.active === true) {
+      this.drawDot(obj.x, obj.y, obj.melee.radius, undefined, true,
+        {
+          'start': obj.melee.angle - obj.melee.arc / 2,
+          'end': obj.melee.angle + obj.melee.arc / 2
+        }, true);
+    }
     // this.drawDot(player.mouseX, player.mouseY, 10);
     if (obj.bullets) {
       obj.bullets.forEach(b => this.drawDot(b.x, b.y, b.radius, undefined, undefined));
@@ -47,7 +55,7 @@ class Canvas {
   //   //this.drawDot(ring.x, ring.y, ring.radius, 'red', true);
   // }
 
-  drawDot(x, y, radius, color = 'black', fill = false, angles) {
+  drawDot(x, y, radius, color = 'black', fill = false, angles, tri = false) {
     this.canvas.fillStyle = color;
     this.canvas.strokeStyle = 'black';
     this.canvas.beginPath();
@@ -59,14 +67,29 @@ class Canvas {
       startAngle = angles.start;
       endAngle = angles.end;
     }
-    this.canvas.ellipse(x, this.element.height - y, radius, radius,
-      0, -startAngle, -endAngle, true);
-    console.log(startAngle);
-    console.log(endAngle);
-    this.canvas.stroke();
     if (fill) {
+      this.canvas.arc(x, this.element.height - y, radius, -startAngle,
+        -endAngle, true);
+      this.canvas.fill();
+    } else {
+      this.canvas.ellipse(x, this.element.height - y, radius, radius,
+        0, -startAngle, -endAngle, true);
+      this.canvas.stroke();
+    }
+
+    if (tri) {
+      this.canvas.beginPath();
+      this.canvas.moveTo(x, this.element.height - y);
+      this.canvas.lineTo(x + radius * Math.cos(startAngle), this.element.height - (y + radius * Math.sin(startAngle)));
+      this.canvas.lineTo(x + radius * Math.cos(endAngle), this.element.height - (y + radius * Math.sin(endAngle)));
+      // this.canvas.lineTo(x, this.element.height - y);
+      this.canvas.closePath();
       this.canvas.fill();
     }
+    // this.canvas.stroke();
+    // if (fill) {
+    //   this.canvas.fill();
+    // }
   }
 
   clear() {
