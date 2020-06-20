@@ -92,10 +92,10 @@ def add_room(id, room):
     data = {}
     data['msg'] = users[id][0] + ' has entered the room!<br>'
     data['room'] = room
-    data['ready'] = [
-        reduce(lambda acc, i: acc +
-               (1 if users[i][1] == room and users[i][2] else 0), games[room].getPlayers(), 0),
-        len(games[room].getPlayers())]
+    data['ready'] = [reduce(lambda acc, i: acc +
+                            (1 if users[i][1] == room and users[i][2] else 0),
+                            games[room].getPlayers(), 0),
+                     len(games[room].getPlayers())]
     data['newUser'] = id
     data['isRunning'] = games[room].isRunning()
     emit('joined', json.dumps(data),
