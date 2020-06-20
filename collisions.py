@@ -20,9 +20,10 @@ class Collisions:
         if not p1.getMelee().isActive():
             return
         for pID in others:
-            if p1.getMelee().collides(p1.getPos(), others[pID]):
+            if others[pID] != p1 and \
+                    p1.getMelee().collides(p1.getPos(), others[pID]):
                 vV = others[pID].getPos().cpy().sub(p1.getPos()).nor()
-                others[pID].setVel(vV.times(400))
+                others[pID].setVel(vV.times(600))
                 p1.setAttackMode(Player.AttackMode.SHOOTING)
 
     def bulletShield(self, player, players):

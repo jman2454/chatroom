@@ -80,9 +80,9 @@ class Canvas {
     if (tri) {
       this.canvas.beginPath();
       this.canvas.moveTo(x, this.element.height - y);
-      this.canvas.lineTo(x + radius * Math.cos(startAngle), y + radius * Math.sin(startAngle));
-      this.canvas.lineTo(x + radius * Math.cos(endAngle), y + radius * Math.sin(endAngle));
-      this.canvas.lineTo(x, this.element.height - y);
+      this.canvas.lineTo(x + radius * Math.cos(startAngle), this.element.height - (y + radius * Math.sin(startAngle)));
+      this.canvas.lineTo(x + radius * Math.cos(endAngle), this.element.height - (y + radius * Math.sin(endAngle)));
+      // this.canvas.lineTo(x, this.element.height - y);
       this.canvas.closePath();
       this.canvas.fill();
     }

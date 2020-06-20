@@ -72,6 +72,7 @@ class Player(GameElement):
             self.shield.setActive(False)
         if (self.melee.isActive()):
             self.melee.setActive(False)
+            self.input['shot'] = False
 
     def update(self, delta):
         self.oldVel = self.vel
@@ -132,6 +133,9 @@ class Player(GameElement):
 
     def getShield(self):
         return self.shield
+
+    def setVel(self, v):
+        self.vel.setVec(v)
 
     def setSpeed(self, speed):
         if self.input['left']:
