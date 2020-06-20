@@ -55,7 +55,8 @@ $(document).ready(function () {
     'up': false,
     'down': false,
     'shot': false,
-    'shield': false
+    'shield': false,
+    'dash': false
   }
 
   var mouseInput = {
@@ -92,7 +93,7 @@ $(document).ready(function () {
         keyInput['up'] = false;
         break;
       case 32:
-        keyInput['shot'] = true;
+        keyInput['dash'] = true;
         break;
       case 16:
         keyInput['shield'] = true;
@@ -119,7 +120,7 @@ $(document).ready(function () {
         keyInput['down'] = false;
         break;
       case 32:
-        keyInput['shot'] = false;
+        keyInput['dash'] = false;
         break;
       case 16:
         keyInput['shield'] = false;
@@ -220,10 +221,11 @@ $(document).ready(function () {
 
   socket.on('joined', function (msg) {
     var obj = JSON.parse(msg);
+    var gameLink = window.location.href.match(/.*:5000/);
     $("#msgs").append(obj.msg);
     room = obj.room;
     $("#name").html(`
-    Current Room: ` + obj.room + `<br><button id="leave">Leave Room</button>
+    Current Room: ` + obj.room + `<br>Game Link: ` + gameLink + `/game/` + room + `<br><button id="leave">Leave Room</button>
     `);
     $("#leave").click(function () {
       leaveGame();

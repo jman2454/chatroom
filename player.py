@@ -15,6 +15,7 @@ class Player(GameElement):
     BULLET_SPEED = 500
     RADIUS = 20
     SHOT_COOLDOWN = 0.05
+    DASH_COOLDOWN = 1
 
     class AttackMode(Enum):
         BLOCKING = auto()
@@ -29,11 +30,13 @@ class Player(GameElement):
         self.input['up'] = False
         self.input['down'] = False
         self.input['shot'] = False
+        self.input['dash'] = False
         self.wasMoving = False
         self.active = True
         self.bullets = []
         self.radius = Player.RADIUS
-        self.cooldown = Player.SHOT_COOLDOWN
+        self.cooldownS = 0 #Player.SHOT_COOLDOWN
+        self.dashCool = 0 #Player.DASH_COOLDOWN
         self.mouseDir = Vector(1, 0)
         self.attackMode = Player.AttackMode.SHOOTING
         self.shield = Shield(self.pos, self.radius * 1.2)
@@ -48,8 +51,8 @@ class Player(GameElement):
 
     def processAttack(self, delta):
         if (self.attackMode == Player.AttackMode.SHOOTING):
-            if (self.cooldown == 0 and self.input['shot']):
-                self.cooldown = Player.SHOT_COOLDOWN
+            if (self.cooldownS == 0 and self.input['shot']):
+                self.cooldownS = Player.SHOT_COOLDOWN
                 self.bullets.append(
                     Bullet(self.pos.cpy().add(self.mouseDir.cpy().times(self.radius)),
                            self.mouseDir.getAngle(), Player.BULLET_SPEED))
@@ -58,7 +61,7 @@ class Player(GameElement):
         else:
             self.shield.setActive(self.input['shield'])
             self.shield.setAngle(self.mouseDir.getAngle())
-            if (self.cooldown == 0 and self.input['shot']):
+            if (self.cooldownS == 0 and self.input['shot']):
                 # TODO: Code for melee and successful melee
                 self.cooldown = Player.SHOT_COOLDOWN
                 self.melee.setActive()
@@ -76,12 +79,19 @@ class Player(GameElement):
 
     def update(self, delta):
         self.oldVel = self.vel
-        self.cooldown = max(self.cooldown - delta, 0)
+        self.cooldownS = max(self.cooldownS - delta, 0)
+        self.dashCool = max(self.dashCool - delta, 0)
         self.pos.add(self.vel.cpy().times(delta))
-        if (self.isMoving() and not self.wasMoving):
-            self.setSpeed(max(Player.DASH_SPEED, self.oldVel.mag()))
-        elif self.vel.mag() <= Player.TOP_SPEED and self.isMoving():
-            self.setSpeed(Player.TOP_SPEED)
+        # if (self.isMoving() and not self.wasMoving):
+        #     self.setSpeed(max(Player.DASH_SPEED, self.oldVel.mag()))
+        # elif self.vel.mag() <= Player.TOP_SPEED and self.isMoving():
+        #     self.setSpeed(Player.TOP_SPEED)
+        if self.isMoving():
+            if (self.input['dash'] and self.dashCool==0):
+                self.setSpeed(max(Player.DASH_SPEED, self.oldVel.mag()))
+                self.dashCool=Player.DASH_COOLDOWN
+            elif (self.vel.mag() <= Player.TOP_SPEED):
+                self.setSpeed(Player.TOP_SPEED)
         self.wasMoving = self.isMoving()
         self.vel.times(0.94)
         self.processAttack(delta)
