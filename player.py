@@ -34,6 +34,7 @@ class Player(GameElement):
         self.wasMoving = False
         self.active = True
         self.bullets = []
+        self.indicators = {'dash': True, 'mode': 'shoot'}
         self.radius = Player.RADIUS
         self.cooldownS = 0 #Player.SHOT_COOLDOWN
         self.dashCool = 0 #Player.DASH_COOLDOWN
@@ -95,6 +96,19 @@ class Player(GameElement):
         self.wasMoving = self.isMoving()
         self.vel.times(0.94)
         self.processAttack(delta)
+
+        # UPDATE INDICATORS
+        if self.dashCool==0:
+            self.indicators['dash'] = True
+        else:
+            self.indicators['dash'] = False
+        if self.attackMode == Player.AttackMode.SHOOTING:
+            self.indicators['mode'] = 'shooting'
+        elif self.attackMode == Player.AttackMode.BLOCKING:
+            self.indicators['mode'] = 'blocking'
+        else:
+            raise ValueError #"error (player.py): fell through all cases on update indicators"
+        
 
         for b in self.bullets:
             b.update(delta)
@@ -169,5 +183,6 @@ class Player(GameElement):
             'shield': self.shield.jsonify(),
             'melee': self.melee.jsonify(),
             'active': self.active,
-            'bullets': [b.jsonify() for b in self.bullets]
+            'bullets': [b.jsonify() for b in self.bullets],
+            'indicators': self.indicators #{'dash': self.dashInd, 'mode': self.attackMode}
         }
