@@ -3,6 +3,7 @@ import { Canvas } from "../js/canvas.js";
 const COOLDOWN = 5;
 
 $("#typing").hide();
+$("#readyButton").hide();
 
 // var io = require('socket.io-client');
 $(document).ready(function () {
@@ -158,6 +159,7 @@ $(document).ready(function () {
   }
 
   function leaveGame() {
+    $("#readyup").html("");
     window.removeEventListener('keyup', up);
     window.removeEventListener('keydown', down);
     window.removeEventListener("mousedown", mouseDown);
@@ -165,6 +167,7 @@ $(document).ready(function () {
     $("#gametest").off();
     clearInterval(interval);
     socket.emit('leave room', socket.id, room);
+    room = null;
   }
 
   socket.on('connect', function () {
@@ -227,6 +230,15 @@ $(document).ready(function () {
     $("#name").html(`
     Current Room: ` + obj.room + `<br>Game Link: ` + gameLink + `/game/` + room + `<br><button id="leave">Leave Room</button>
     `);
+    if (obj.isRunning === false) {
+      $("#readyup").html(obj.ready[0] + " / " + obj.ready[1] + " players ready");
+      $("#readyButton").html("Ready Up");
+      console.log(typeof obj.newUser);
+      console.log(typeof socket.id);
+      if (obj.newUser === socket.id) {
+        $("#readyButton").show();
+      }
+    }
     $("#leave").click(function () {
       leaveGame();
     });
@@ -244,8 +256,38 @@ $(document).ready(function () {
         $("#msgbox").val("");
       }
     });
-
+    $("#readyButton").click(function () {
+      socket.emit('readyup', socket.id, room);
+      $("#readyButton").hide();
+      // $("#readyButton").click(function () {
+      //   socket.emit('unready', socket.id, room);
+      //   $("#readyButton").html("Ready Up");
+      // });
+    });
     gameSetup();
+  });
+
+  socket.on('readied', function (msg) {
+    var obj = JSON.parse(msg);
+    $("#readyup").html(obj.ready + " / " + obj.total + " players ready");
+  });
+
+  // socket.on('unreadied', function (msg) {
+  //   var obj = JSON.parse(msg);
+  //   $("#readyup").html(obj.ready + " / " + obj.total + " players ready");
+  //   $("#readyButton").click(function () {
+  //     socket.emit('readyup', socket.id, room);
+  //     $("#readyButton").html("Unready");
+  //     $("#readyButton").click(function () {
+  //       socket.emit('unready', socket.id, room);
+  //       $("#readyButton").html("Ready Up");
+  //     });
+  //   });
+  // });
+
+  socket.on('game start', function () {
+    $("#readyup").html("");
+    $("#readyButton").hide();
   });
 
   // socket.on('disconnect', function () {
@@ -254,7 +296,6 @@ $(document).ready(function () {
 
   socket.on('left', function (msg) {
     canvas.clear();
-    room = null;
     $("#chat").html("");
     $("#msgs").html(msg);
     $("#name").html(`<div id='session'>
@@ -287,7 +328,7 @@ $(document).ready(function () {
     }
     canvas.clear();
     canvas.drawRing(ring);
-    if ((players[socket.id]).active === false) {
+    if (room !== null && (players[socket.id]).active === false) {
       leaveGame();
     }
     for (var p in players) {
