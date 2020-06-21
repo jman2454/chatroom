@@ -34,7 +34,7 @@ class Player(GameElement):
         self.wasMoving = False
         self.active = True
         self.bullets = []
-        self.indicators = {'dash': True, 'mode': 'shoot'}
+        self.indicators = {'dash': True, 'mode': 'shooting'}
         self.radius = Player.RADIUS
         self.cooldownS = 0  # Player.SHOT_COOLDOWN
         self.dashCool = 0  # Player.DASH_COOLDOWN
