@@ -10,6 +10,8 @@ class Canvas {
     this.name = name;
     this.width = width;
     this.height = height;
+    this.INDICATOR_WIDTH = width/5;
+    this.INDICATOR_HEIGHT = height/15;
     document.getElementById("sim").append(c);
   }
 
@@ -21,6 +23,16 @@ class Canvas {
     // // this.canvas.closePath();
     // this.canvas.ellipse(parseInt(player.x), this.element.height - parseInt(player.y), 20, 20, 10, 0, 2 * Math.PI);
     // this.canvas.stroke();
+    if (obj.indicators) {
+      // for (const [idx, ind] in obj.indicators) { // this might not have a deterministic order so would have to fix that later
+      //   console.log('test1-----------------------------------------');
+      //   var offset = idx*this.INDICATOR_WIDTH
+      //   this.drawIndicators(idx, ind);
+      // }
+      this.drawIndicators(obj.indicators.dash, 'Dash: ', 0);
+      this.drawIndicators(obj.indicators.mode, 'Mode: ', 1);
+    }
+    // console.log('test2-----------------------------------------');
     this.drawDot(obj.x, obj.y, obj.radius, undefined, true);
 
     if (obj.shield && obj.shield.active === true) {
@@ -90,6 +102,71 @@ class Canvas {
     // if (fill) {
     //   this.canvas.fill();
     // }
+  }
+
+  drawIndicators(indicator, string, idx) {
+    if (string === 'Dash: ') {
+      this.drawRect(idx*4*this.INDICATOR_WIDTH, 0, this.INDICATOR_WIDTH, this.INDICATOR_HEIGHT, undefined, undefined, indicator);
+      if (indicator) {
+        string = string + 'ready';
+      } else {
+        string = string + 'not ready';
+      }
+      this.drawText(this.INDICATOR_WIDTH/2, this.INDICATOR_HEIGHT/2, string, 'orange');
+    } else if (indicator==='shooting') {
+      this.drawRect(idx*4*this.INDICATOR_WIDTH, 0, this.INDICATOR_WIDTH, this.INDICATOR_HEIGHT, 'red', true);
+      this.drawText((idx*4*this.INDICATOR_WIDTH) + (this.INDICATOR_WIDTH/2), this.INDICATOR_HEIGHT/2, string+indicator, 'white');
+    } else {
+      this.drawRect(idx*4*this.INDICATOR_WIDTH, 0, this.INDICATOR_WIDTH, this.INDICATOR_HEIGHT, 'blue', true);
+      this.drawText((idx*4*this.INDICATOR_WIDTH) + (this.INDICATOR_WIDTH/2), this.INDICATOR_HEIGHT/2, string+indicator, 'white');
+    }
+  }
+
+  // resetCanvasSettings() {
+  //   this.canvas.lineWidth = 1;
+  //   this.canvas.strokeStyle = 'black';
+  //   this.fillStyle = 'black';
+  // }
+
+  drawText(x,y,string,color) {
+    this.canvas.font = "10px Comic Sans MS";
+    this.canvas.fillStyle = color;
+    this.canvas.textAlign = "center";
+    this.canvas.fillText(string, x, y);
+  }
+
+  drawRect(x, y, w, h, color = 'gray', fill = true, grad = false) {
+    // this.canvas.beginPath();
+    // console.log("why diss bish not work");
+    // console.log(x);
+    // console.log(y);
+    // console.log(w);
+    // console.log(h);
+    // this.canvas.strokeStyle = 'black';
+    // this.canvas.strokeRect(x, y, w, h);
+    if (grad) {
+      var gradient = this.canvas.createLinearGradient(0, 0, w, 0);
+      gradient.addColorStop("0", "magenta");
+      gradient.addColorStop("0.5" ,"blue");
+      gradient.addColorStop("1.0", "red");
+      // this.canvas.strokeStyle = gradient;
+      // this.canvas.lineWidth = 5;
+      this.canvas.fillStyle = gradient;
+      fill = true;
+      // this.canvas.stroke();
+    } else {
+      this.canvas.strokeStyle = 'black';
+      this.canvas.fillStyle = color;
+      // this.canvas.stroke();
+    }
+    // this.canvas.strokeStyle = 'black';
+    this.canvas.stroke();
+    if (fill) {
+      this.canvas.fillRect(x, y, w, h);
+    } else {
+    this.canvas.strokeRect(x, y, w, h);
+    }
+    // this.resetCanvasSettings();
   }
 
   clear() {
