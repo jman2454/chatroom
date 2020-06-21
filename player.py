@@ -36,8 +36,8 @@ class Player(GameElement):
         self.bullets = []
         self.indicators = {'dash': True, 'mode': 'shoot'}
         self.radius = Player.RADIUS
-        self.cooldownS = 0 #Player.SHOT_COOLDOWN
-        self.dashCool = 0 #Player.DASH_COOLDOWN
+        self.cooldownS = 0  # Player.SHOT_COOLDOWN
+        self.dashCool = 0  # Player.DASH_COOLDOWN
         self.mouseDir = Vector(1, 0)
         self.attackMode = Player.AttackMode.SHOOTING
         self.shield = Shield(self.pos, self.radius * 1.2)
@@ -57,7 +57,7 @@ class Player(GameElement):
                 self.bullets.append(
                     Bullet(self.pos.cpy().add(self.mouseDir.cpy().times(self.radius)),
                            self.mouseDir.getAngle(), Player.BULLET_SPEED))
-                self.attackMode = Player.AttackMode.BLOCKING
+                self.setAttackMode(Player.AttackMode.SHOOTING)
                 self.input['shot'] = False
         else:
             self.shield.setActive(self.input['shield'])
@@ -72,6 +72,10 @@ class Player(GameElement):
 
     def setAttackMode(self, mode):
         self.attackMode = mode
+        if self.attackMode == Player.AttackMode.SHOOTING:
+            self.indicators['mode'] = 'shooting'
+        elif self.attackMode == Player.AttackMode.BLOCKING:
+            self.indicators['mode'] = 'blocking'
         if (self.shield.isActive()):
             self.shield.setActive(False)
         if (self.melee.isActive()):
@@ -88,9 +92,9 @@ class Player(GameElement):
         # elif self.vel.mag() <= Player.TOP_SPEED and self.isMoving():
         #     self.setSpeed(Player.TOP_SPEED)
         if self.isMoving():
-            if (self.input['dash'] and self.dashCool==0):
+            if (self.input['dash'] and self.dashCool == 0):
                 self.setSpeed(max(Player.DASH_SPEED, self.oldVel.mag()))
-                self.dashCool=Player.DASH_COOLDOWN
+                self.dashCool = Player.DASH_COOLDOWN
             elif (self.vel.mag() <= Player.TOP_SPEED):
                 self.setSpeed(Player.TOP_SPEED)
         self.wasMoving = self.isMoving()
@@ -98,17 +102,10 @@ class Player(GameElement):
         self.processAttack(delta)
 
         # UPDATE INDICATORS
-        if self.dashCool==0:
+        if self.dashCool == 0:
             self.indicators['dash'] = True
         else:
             self.indicators['dash'] = False
-        if self.attackMode == Player.AttackMode.SHOOTING:
-            self.indicators['mode'] = 'shooting'
-        elif self.attackMode == Player.AttackMode.BLOCKING:
-            self.indicators['mode'] = 'blocking'
-        else:
-            raise ValueError #"error (player.py): fell through all cases on update indicators"
-        
 
         for b in self.bullets:
             b.update(delta)
@@ -184,5 +181,6 @@ class Player(GameElement):
             'melee': self.melee.jsonify(),
             'active': self.active,
             'bullets': [b.jsonify() for b in self.bullets],
-            'indicators': self.indicators #{'dash': self.dashInd, 'mode': self.attackMode}
+            # {'dash': self.dashInd, 'mode': self.attackMode}
+            'indicators': self.indicators
         }
