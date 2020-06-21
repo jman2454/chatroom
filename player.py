@@ -57,7 +57,7 @@ class Player(GameElement):
                 self.bullets.append(
                     Bullet(self.pos.cpy().add(self.mouseDir.cpy().times(self.radius)),
                            self.mouseDir.getAngle(), Player.BULLET_SPEED))
-                self.setAttackMode(Player.AttackMode.SHOOTING)
+                self.setAttackMode(Player.AttackMode.BLOCKING)
                 self.input['shot'] = False
         else:
             self.shield.setActive(self.input['shield'])
