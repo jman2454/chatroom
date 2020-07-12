@@ -67,12 +67,12 @@ $(document).ready(function () {
 
   var mouseDown = function (e) {
     keyInput['shot'] = true
-    socket.emit('keypress' + room, socket.id, keyInput);
+    socket.emit('keypress', socket.id, room, keyInput);
   }
 
   var mouseUp = function (e) {
     keyInput['shot'] = false
-    socket.emit('keypress' + room, socket.id, keyInput);
+    socket.emit('keypress', socket.id, room, keyInput);
   }
 
   var down = function (e) {
@@ -102,7 +102,7 @@ $(document).ready(function () {
     }
     if (e.keyCode === 32 || e.keyCode === 83 || e.keyCode === 87 || e.keyCode === 65
       || e.keyCode === 68 || e.keyCode === 16) {
-      socket.emit('keypress' + room, socket.id, keyInput);
+      socket.emit('keypress', socket.id, room, keyInput);
     }
   }
 
@@ -129,7 +129,7 @@ $(document).ready(function () {
     }
     if (e.keyCode === 32 || e.keyCode === 83 || e.keyCode === 87 || e.keyCode === 65
       || e.keyCode === 68 || e.keyCode === 16) {
-      socket.emit('keypress' + room, socket.id, keyInput);
+      socket.emit('keypress', socket.id, room, keyInput);
     }
   }
 
@@ -146,7 +146,7 @@ $(document).ready(function () {
   var interval = 0;
 
   function emitMousePos(mousePos) {
-    socket.emit('mousemove' + room, socket.id, mousePos);
+    socket.emit('mousemove', socket.id, room, mousePos);
   }
 
   function gameSetup() {

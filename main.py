@@ -3,12 +3,19 @@ from flask_socketio import SocketIO, send, emit, join_room, leave_room, close_ro
 import json
 from game import Game
 from functools import reduce
+# from engineio.payload import Payload
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'bruh'
-socketio = SocketIO(app)
 
-outFile = open("demofile2.txt", "a")
+# Payload.max_decode_packets = 500
+# socketio = SocketIO(app, async_mode='gevent', ping_timeout=cfg.service.PING_TIMEOUT,
+#                     ping_interval=cfg.service.PING_INTERVAL)
+
+socketio = SocketIO(app, ping_timeout=3000, ping_interval=1000)
+# socketio = SocketIO(app, async_mode='gevent', ping_timeout=60000,
+#                     ping_interval=25000)
+
 
 # users[id] = [<name>, <room>, <ready>]
 users = {}
@@ -74,6 +81,15 @@ def add_user(id, name):
 # def join_game(socket_id, room_id):
 #     return render_template('index.html', linked=True, id=socket_id, room=room_id)
 
+@socketio.on('connect')
+def test_conn():
+    print(request.sid + " Connected")
+
+
+@socketio.on('disconnect')
+def test_dis():
+    print(request.sid + " Disconnected")
+
 
 @socketio.on('new room')
 def add_room(id, room):
@@ -82,7 +98,7 @@ def add_room(id, room):
         return
     elif not room in games:
         # rooms[room] = [id]
-        games[room] = Game(socketio, room)
+        games[room] = Game(room)
         emit('new game', room=room)
     # else:
     #     rooms[room].append(id)
@@ -116,6 +132,20 @@ def add_room(id, room):
 def readyUp(id, room):
     users[id][2] = True
     # room = users[id][1]
+    processReadyUsers(room)
+
+
+@socketio.on('mousemove')
+def mouseMove(id, room, mouseInput):
+    games[room].processCursor(id, mouseInput)
+
+
+@socketio.on('keypress')
+def keyPress(id, room, keyInput):
+    games[room].processInput(id, keyInput)
+
+
+def processReadyUsers(room):
     allReady = all([users[i][2] for i in games[room].getPlayers()])
     readyUsers = {
         'ready': reduce(lambda acc, i: acc + (1 if users[i][2] else 0), games[room].getPlayers(), 0),
@@ -148,6 +178,7 @@ def leave(id, room):
     #     close_room(room)
     #     rooms.pop(room, None)
     users[id][1] = None
+    processReadyUsers(room)
 
 
 if __name__ == '__main__':

@@ -31,6 +31,7 @@ class Player(GameElement):
         self.input['down'] = False
         self.input['shot'] = False
         self.input['dash'] = False
+        self.input['shield'] = False
         self.wasMoving = False
         self.active = True
         self.bullets = []
@@ -77,6 +78,7 @@ class Player(GameElement):
         elif self.attackMode == Player.AttackMode.BLOCKING:
             self.indicators['mode'] = 'blocking'
         if (self.shield.isActive()):
+            self.input['shield'] = False
             self.shield.setActive(False)
         if (self.melee.isActive()):
             self.melee.setActive(False)

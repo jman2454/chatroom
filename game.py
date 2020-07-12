@@ -9,19 +9,15 @@ from collisions import Collisions
 
 
 class Game:
-    def __init__(self, socketio, room):
+    def __init__(self, room):
         self.width = 500
         self.height = 500
         GameElement.setBounds(self.width, self.height)
         self.currFrame = 0
         self.pastFrame = 0
-        self.socketio = socketio
         self.players = {}
         self.ring = Sumoring()
         self.room = room
-        self.socketio.on_event('new player' + room, self.addPlayer)
-        self.socketio.on_event('keypress' + room, self.processInput)
-        self.socketio.on_event('mousemove' + room, self.processCursor)
         self.collisions = Collisions()
         self.running = False
 
